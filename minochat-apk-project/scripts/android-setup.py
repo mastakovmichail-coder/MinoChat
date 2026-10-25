@@ -35,3 +35,29 @@ sp = Image.new('RGB', (480, 480), (5, 8, 20)); sp.paste(src.resize((220, 220), I
 for d in os.listdir(RES):
     if d.startswith('drawable') and os.path.exists(RES + '/' + d + '/splash.png'): sp.save(RES + '/' + d + '/splash.png')
 print('android setup done')
+
+# 4) плагины тянут новейшие androidx-библиотеки, которым нужен compileSdk 35, а наш Gradle собирает на 34.
+#    Фиксируем версии, совместимые с 34.
+gp = 'android/build.gradle'
+g = open(gp, encoding='utf8').read()
+if 'MinoChatPins' not in g:
+    g += """
+
+// MinoChatPins
+allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force 'androidx.work:work-runtime:2.9.1'
+            force 'androidx.work:work-runtime-ktx:2.9.1'
+            force 'androidx.core:core:1.13.1'
+            force 'androidx.core:core-ktx:1.13.1'
+            force 'androidx.activity:activity:1.9.3'
+            force 'androidx.lifecycle:lifecycle-runtime:2.8.7'
+            force 'androidx.navigation:navigation-common:2.8.5'
+            force 'androidx.navigation:navigation-runtime:2.8.5'
+        }
+    }
+}
+"""
+    open(gp, 'w', encoding='utf8').write(g)
+print('pins added')
