@@ -86,3 +86,17 @@ if _os.path.exists('google-services.json'):
     _sh.copy('google-services.json', 'android/app/google-services.json'); print('google-services.json copied')
 else:
     print('WARNING: google-services.json not found - Google sign-in will not work on Android')
+
+# 8) плагин Google-входа не подтягивает play-services-auth сам (без неё приложение падает при запуске)
+ap2 = 'android/app/build.gradle'
+a2 = open(ap2, encoding='utf8').read()
+if 'MinoChatDeps' not in a2:
+    a2 += """
+
+// MinoChatDeps
+dependencies {
+    implementation 'com.google.android.gms:play-services-auth:21.2.0'
+}
+"""
+    open(ap2, 'w', encoding='utf8').write(a2)
+print('play-services-auth added')
