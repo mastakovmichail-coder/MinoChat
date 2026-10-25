@@ -1,0 +1,8 @@
+{
+  "appId": "app.minochat.mobile",
+  "appName": "MinoChat",
+  "webDir": "www",
+  "backgroundColor": "#050814",
+  "android": { "allowMixedContent": false },
+  "server": { "androidScheme": "https" }
+}
