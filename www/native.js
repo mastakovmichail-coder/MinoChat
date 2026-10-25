@@ -41,7 +41,7 @@
     if (busy) return; busy = true;
     try {
       say('Скачиваю обновление ' + j.version + '…');
-      const b = await CU.download({ url: BASE + '/' + j.zip.replace(/^\//, ''), version: j.version });
+      const b = await CU.download({ url: BASE + '/' + j.zip.replace(/^\//, ''), version: j.version, checksum: j.checksum || '' });
       say('Обновление готово, перезапускаю…');
       setTimeout(() => CU.set(b), 1200);
     } catch (e) { busy = false; say('Не удалось обновить интерфейс'); }
