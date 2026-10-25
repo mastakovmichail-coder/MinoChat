@@ -2,7 +2,7 @@
 <html lang="ru" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050814">
 <link rel="icon" id="fav" type="image/png" href="favicon.png">
 <link rel="manifest" href="manifest.json">
@@ -238,7 +238,71 @@ pre.cb2{background:rgba(0,0,0,.32);padding:8px 10px;border-radius:10px;font-fami
   .app{grid-template-columns:1fr}
   .pane{display:none}.app.open .side{display:none}.app.open .pane{display:flex}
   .back{display:grid}.m{max-width:88%}.more{display:none}
+  .ib{width:38px;height:38px;border-radius:13px}.head{gap:8px;padding:8px 10px}.comp .ib{width:38px;height:38px}
 }
+
+/* ===== v3.1: точный размер экрана, красивые кнопки, жидкое стекло ===== */
+html{overflow:hidden;position:fixed;inset:0;width:100%;height:100%;overscroll-behavior:none}
+body{position:fixed;inset:0;width:100%;height:100%;overscroll-behavior:none;touch-action:manipulation}
+#root,.app,.center{height:var(--vh,100dvh);max-height:var(--vh,100dvh);width:100%}
+.app{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.modal{padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom))}
+.m .bub,.empty,.mscroll{max-width:100%}.msgs{overflow-x:hidden}
+/* кнопки-значки: стеклянные плитки со свечением */
+.ib{position:relative;width:42px;height:42px;border-radius:15px;color:#cfe4ff;border:1px solid rgba(130,175,255,.28);
+  background:linear-gradient(150deg,rgba(80,140,255,.30),rgba(39,196,255,.10) 70%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -8px 14px rgba(20,60,160,.18),0 6px 16px rgba(5,10,40,.35);transition:transform .15s,box-shadow .2s,background .2s}
+.ib:hover{background:linear-gradient(150deg,rgba(90,155,255,.5),rgba(39,196,255,.22) 75%);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 18px rgba(60,150,255,.55),0 6px 16px rgba(5,10,40,.35)}
+.ib:active{transform:scale(.9)}
+.ib svg{width:21px;height:21px;stroke-width:2.1;filter:drop-shadow(0 0 5px rgba(120,190,255,.7))}
+[data-theme=light] .ib{color:#1d4fd8;border-color:rgba(47,107,255,.25);background:linear-gradient(150deg,rgba(47,107,255,.16),rgba(39,196,255,.08));box-shadow:inset 0 1px 0 #fff,0 4px 12px rgba(40,70,160,.15)}
+.ib.back{background:none;border-color:transparent;box-shadow:none}
+.send{position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 22px rgba(47,130,255,.65),0 8px 18px rgba(20,60,200,.45)}
+.send:before{content:"";position:absolute;left:0;right:0;top:0;height:50%;background:linear-gradient(rgba(255,255,255,.35),transparent)}
+.send:active{transform:scale(.9)}.send svg{width:20px;height:20px;fill:#fff;stroke:none;position:relative}
+.sm2,.chip2{border:1px solid rgba(130,175,255,.22);background:linear-gradient(150deg,rgba(80,140,255,.16),rgba(39,196,255,.05));box-shadow:inset 0 1px 0 rgba(255,255,255,.15);transition:transform .15s,box-shadow .2s}
+.sm2:hover,.chip2:hover{box-shadow:0 0 14px rgba(60,150,255,.4)}.sm2:active,.chip2:active{transform:scale(.95)}
+.chip2.on{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(47,107,255,.45),inset 0 1px 0 rgba(255,255,255,.4)}
+.btn{position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 12px 28px rgba(47,107,255,.45)}
+.btn:before{content:"";position:absolute;left:0;right:0;top:0;height:50%;background:linear-gradient(rgba(255,255,255,.22),transparent);pointer-events:none}
+.btn.ghost:before{display:none}.btn:active{transform:scale(.97)}
+.cb{width:64px;height:64px;border:1px solid rgba(255,255,255,.35);background:linear-gradient(150deg,rgba(255,255,255,.34),rgba(255,255,255,.08));box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 10px 26px rgba(0,0,0,.35)}
+.cb.red{background:linear-gradient(150deg,#ff6b88,#e0214a);box-shadow:0 0 26px rgba(255,70,110,.6),inset 0 1px 0 rgba(255,255,255,.5)}
+.cb.grn{background:linear-gradient(150deg,#4ee3a0,#12a76b);box-shadow:0 0 26px rgba(40,220,150,.6),inset 0 1px 0 rgba(255,255,255,.5)}
+.cb.off{background:linear-gradient(150deg,#ff6b88,#b9173b)}
+.row .badge{box-shadow:0 0 12px rgba(47,130,255,.7)}
+.fab{box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 20px rgba(47,130,255,.55),0 8px 20px rgba(0,0,0,.4)}
+/* ===== ЖИДКОЕ СТЕКЛО ===== */
+[data-glass=on]{--gb:26px;--ga:.18}
+[data-glass=on] body{background:var(--bg)}
+[data-glass=on] .bgfx{background:
+  radial-gradient(520px 420px at 12% 8%,rgba(60,120,255,.85),transparent 62%),
+  radial-gradient(560px 460px at 92% 18%,rgba(190,70,255,.65),transparent 62%),
+  radial-gradient(620px 520px at 72% 96%,rgba(0,215,255,.70),transparent 62%),
+  radial-gradient(480px 400px at 6% 92%,rgba(255,90,150,.55),transparent 62%);animation:lgmove 18s ease-in-out infinite alternate;filter:saturate(1.25)}
+@keyframes lgmove{to{transform:scale(1.12) translate(-18px,14px)}}
+[data-glass=on][data-theme=light] .bgfx{opacity:.7}
+[data-glass=on] .side,[data-glass=on] .head,[data-glass=on] .card,[data-glass=on] .comp,[data-glass=on] .menu,[data-glass=on] .emo,[data-glass=on] .setm .nav,[data-glass=on] .selbar,[data-glass=on] .pinbar,[data-glass=on] .nb,[data-glass=on] .toast{
+  background:linear-gradient(135deg,rgba(255,255,255,calc(var(--ga) + .10)),rgba(255,255,255,var(--ga)) 45%,rgba(255,255,255,calc(var(--ga) - .06)))!important;
+  -webkit-backdrop-filter:blur(var(--gb)) saturate(190%) brightness(1.08);backdrop-filter:blur(var(--gb)) saturate(190%) brightness(1.08);
+  border:1px solid rgba(255,255,255,.34)!important;
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.65),inset 0 -1px 0 rgba(255,255,255,.12),inset 1.5px 0 0 rgba(255,255,255,.22),0 18px 50px rgba(10,20,80,.38)!important}
+[data-glass=on] .comp{border-radius:26px}
+[data-glass=on] .setm{background:transparent!important}
+[data-glass=on] .setm .body{background:rgba(255,255,255,calc(var(--ga) - .06))}
+[data-glass=on] .msgs{background:transparent!important}
+[data-glass=on] .m.them .bub{background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,.12))!important;border:1px solid rgba(255,255,255,.35);
+  -webkit-backdrop-filter:blur(calc(var(--gb) * .6)) saturate(180%);backdrop-filter:blur(calc(var(--gb) * .6)) saturate(180%);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.6),0 8px 22px rgba(10,20,80,.25)}
+[data-glass=on] .m.me .bub{background:linear-gradient(135deg,rgba(60,130,255,.78),rgba(40,200,255,.55))!important;border:1px solid rgba(255,255,255,.4);
+  -webkit-backdrop-filter:blur(calc(var(--gb) * .6)) saturate(190%);backdrop-filter:blur(calc(var(--gb) * .6)) saturate(190%);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.7),0 10px 26px rgba(20,80,255,.35)}
+[data-glass=on] .row{border-radius:20px;margin:3px 8px;border:1px solid transparent}
+[data-glass=on] .row:hover,[data-glass=on] .row.on{background:linear-gradient(135deg,rgba(255,255,255,.28),rgba(255,255,255,.10))!important;border-color:rgba(255,255,255,.4);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.55)}
+[data-glass=on] .inp{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.35);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+[data-glass=on] .ib,[data-glass=on] .sm2,[data-glass=on] .chip2:not(.on){background:linear-gradient(150deg,rgba(255,255,255,.38),rgba(255,255,255,.10))!important;border-color:rgba(255,255,255,.5);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.75),0 8px 20px rgba(10,20,80,.3);color:#fff;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+[data-glass=on][data-theme=light] .ib,[data-glass=on][data-theme=light] .sm2,[data-glass=on][data-theme=light] .chip2:not(.on){color:#143a9c}
+[data-glass=on] .modal{background:rgba(10,20,60,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+[data-glass=on] .lockscr{background:linear-gradient(135deg,#2547c9,#7b2fd6,#0aa6d8)}
+[data-glass=on] .badge{background:linear-gradient(150deg,#ff6b88,#e0214a);box-shadow:0 0 14px rgba(255,70,110,.7),inset 0 1px 0 rgba(255,255,255,.6)}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -443,7 +507,7 @@ async function claimProfile(u, name, username) {
    MinoChat - ядро: настройки, оформление, звуки, список чатов, открытие чата
    ===================================================================== */
 const DEF = {
-  theme: 'dark', acc: 'neon', accCustom: '#2f6bff', wall: 'aurora', fs: 'm', bub: 'round', compact: false, anim: true, h12: false,
+  theme: 'dark', acc: 'neon', accCustom: '#2f6bff', wall: 'aurora', fs: 'm', bub: 'round', compact: false, glass: false, glassBlur: 26, glassAlpha: 18, anim: true, h12: false,
   sendEnter: true, sound: true, tone: 'pop', vol: 0.6, sndSend: true, preview: true, dndOn: false, dndFrom: '23:00', dndTo: '07:00', dndUntil: 0,
   hideSeen: false, noRead: false, lockMin: 0, ring: 'classic', filter: 'all', sort: 'time',
   qr: ['Привет!', 'Скоро отвечу', 'Позвони мне, пожалуйста', 'Спасибо!', 'Ок'], recentEmoji: [], recentStick: [],
@@ -494,12 +558,14 @@ function applyTheme() {
   if (t === 'auto') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
   if (t === 'amoled') { t = 'dark'; am = true; }
   r.setAttribute('data-theme', t); r.setAttribute('data-amoled', am ? 'on' : 'off');
-  r.dataset.wall = cfg.get('wall'); r.dataset.bub = cfg.get('bub'); r.dataset.compact = cfg.get('compact') ? 'on' : 'off'; r.dataset.anim = cfg.get('anim') ? 'on' : 'off';
+  r.dataset.wall = cfg.get('wall'); r.dataset.bub = cfg.get('bub'); r.dataset.compact = cfg.get('compact') ? 'on' : 'off'; r.dataset.anim = cfg.get('anim') ? 'on' : 'off'; r.setAttribute('data-glass', cfg.get('glass') ? 'on' : 'off'); r.style.setProperty('--gb', cfg.get('glassBlur') + 'px'); r.style.setProperty('--ga', String(cfg.get('glassAlpha') / 100));
   r.style.setProperty('--fs', { s: '13px', m: '15px', l: '17px', xl: '19px' }[cfg.get('fs')] || '15px');
-  window.__h12 = !!cfg.get('h12'); applyAccent();
+  window.__h12 = !!cfg.get('h12'); applyAccent(); fitVh();
   const tc = document.querySelector('meta[name=theme-color]'); if (tc) tc.content = t === 'light' ? '#eef3ff' : (am ? '#000000' : '#050814');
 }
+function fitVh() { try { document.documentElement.style.setProperty('--vh', window.innerHeight + 'px'); } catch { /* ignore */ } }
 applyTheme();
+window.addEventListener('resize', fitVh); window.addEventListener('orientationchange', () => setTimeout(fitVh, 200)); try { window.visualViewport && window.visualViewport.addEventListener('resize', () => { try { document.documentElement.style.setProperty('--vh', window.visualViewport.height + 'px'); } catch { /* ignore */ } }); } catch { /* ignore */ }
 try { matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { if (cfg.get('theme') === 'auto') applyTheme(); }); } catch { /* ignore */ }
 
 /* ---------- звуки и «не беспокоить» ---------- */
@@ -874,7 +940,7 @@ function renderComposer() {
     const u = otherOf(S.active);
     return box.replaceChildren(h('div', { class: 'blk' }, mode === 'iblock' ? ['Вы заблокировали этого человека. ', h('button', { class: 'link', style: 'display:inline;margin:0', onclick: () => unblockUser(u) }, 'Разблокировать')] : mode === 'ro' ? 'В этой группе писать могут только администраторы.' : 'Этот пользователь ограничил входящие сообщения.'));
   }
-  const ta = h('textarea', { id: 'inp', rows: 1, placeholder: 'Сообщение…  (/help — команды)', oninput: onType, onpaste: onPaste, onkeydown: onInpKey });
+  const ta = h('textarea', { id: 'inp', rows: 1, placeholder: 'Сообщение…', oninput: onType, onpaste: onPaste, onkeydown: onInpKey });
   ta.value = S.drafts[S.active] || '';
   box.replaceChildren(h('div', { id: 'ctx' }), h('div', { class: 'comp', id: 'comp' }, ibtn('smile', 'Эмодзи и стикеры', toggleEmoji), ibtn('clip', 'Прикрепить', (e) => { const r = e.currentTarget.getBoundingClientRect(); e.stopPropagation(); popMenu(r.left, r.top - 330, [['🖼 Фото', () => $('#file').click()], ['📎 Файл', () => $('#fileAny').click()], ['📊 Опрос', openPoll], ['📍 Геопозиция', sendGeo], ['👤 Моя визитка', sendCard], ['⚡ Быстрые ответы', quickReplies], ['🎙 Диктовать текст', dictate]]); }), ta, ibtn('mic', 'Голосовое сообщение', startRec),
     (() => { const b = h('button', { class: 'send', title: 'Отправить', onclick: submit }); b.innerHTML = ICON.send; return b; })(),
@@ -1947,7 +2013,7 @@ const FEATURES = {
   'Форматирование': ['**жирный**', '_курсив_', '~зачёркнутый~', '`код` и блоки кода', '||спойлер||', '> цитаты', 'Ссылки кликабельны', '@упоминания в группах', 'Эффект конфетти по 🎉'],
   'Группы': ['Создание групп до 50 человек', 'Фото группы', 'Описание группы', 'Админы и назначение админов', 'Режим «пишут только админы»', 'Добавление и удаление участников', 'Выход из группы', 'Системные сообщения', 'Имена отправителей', 'Упоминания пробивают «без звука»'],
   'Звонки': ['Аудиозвонки', 'Видеозвонки', 'Выключение микрофона и камеры', 'Показ экрана', 'Переключение камеры', 'Выключение звука собеседника', 'Таймер звонка', 'Звонки в истории чата', 'Входящий звонок на весь экран', 'Выбор рингтона', 'Диагностика сети и TURN'],
-  'Оформление': ['Тёмная, светлая, AMOLED и авто-тема', '8 цветовых схем + свой цвет', '6 обоев чата', 'Размер шрифта (4 уровня)', 'Форма пузырей', 'Компактный режим', 'Отключение анимаций', '12/24-часовой формат'],
+  'Оформление': ['Тёмная, светлая, AMOLED и авто-тема', '8 цветовых схем + свой цвет', '6 обоев чата', 'Размер шрифта (4 уровня)', 'Форма пузырей', 'Компактный режим', 'Отключение анимаций', '12/24-часовой формат', 'Жидкое стекло (размытие и прозрачность настраиваются)', 'Стеклянные кнопки со свечением'],
   'Списки чатов': ['Фильтры: все, непрочитанные, личные, группы', 'Архив чатов', 'Закрепление чатов', 'Отметить непрочитанным', 'Скрытие и очистка чата у себя', 'Выключение уведомлений на время', 'Свои имена контактов', 'Сортировка', 'Поиск людей по логину', 'Ссылка на профиль (?u=логин)', 'Быстрый переход Ctrl+K'],
   'Приватность и безопасность': ['Чёрный список', 'Скрыть «был(а) в сети»', 'Не отправлять «прочитано»', 'PIN-код на вход', 'Автоблокировка по таймеру', 'Несколько аккаунтов', 'Выход из аккаунта'],
   'Уведомления': ['Всплывающие уведомления', 'Предпросмотр текста', 'Звуки: 6 мелодий, громкость', 'Звук отправки', 'Режим «не беспокоить» по расписанию', 'Счётчик в заголовке вкладки и значке', 'Мигание заголовка'],
@@ -1962,7 +2028,7 @@ function openSettings(tab) {
   const wrap = h('div', { class: 'card setm' }, nav, body);
   const m = h('div', { class: 'modal', onclick: (e) => { if (e.target === m) m.remove(); } }, wrap); document.body.append(m);
   const T = [['profile', '👤 Профиль'], ['look', '🎨 Оформление'], ['chat', '💬 Чаты'], ['notif', '🔔 Уведомления'], ['privacy', '🔒 Приватность'], ['acc', '👥 Аккаунты'], ['data', '💾 Данные'], ['about', 'ℹ️ О MinoChat']];
-  const set = (k, v, re) => { cfg.set(k, v); if (['theme', 'acc', 'accCustom', 'wall', 'fs', 'bub', 'compact', 'anim', 'h12'].includes(k)) applyTheme(); if (re) re(); };
+  const set = (k, v, re) => { cfg.set(k, v); if (['theme', 'acc', 'accCustom', 'wall', 'fs', 'bub', 'compact', 'anim', 'h12', 'glass', 'glassBlur', 'glassAlpha'].includes(k)) applyTheme(); if (re) re(); };
   const rl = (t, sub, ctl) => h('div', { class: 'rl' }, h('span', {}, t, sub ? h('small', {}, sub) : null), ctl);
   const tog = (k, t, sub, after) => rl(t, sub, h('input', { type: 'checkbox', checked: cfg.get(k) ? '' : null, onchange: (e) => { set(k, e.target.checked); after && after(e.target.checked); } }));
   const sel = (k, t, opts, sub, after) => rl(t, sub, h('select', { onchange: (e) => { set(k, e.target.value); after && after(); } }, opts.map(([v, l]) => h('option', { value: v, selected: String(cfg.get(k)) === v ? '' : null }, l))));
@@ -2000,6 +2066,9 @@ function openSettings(tab) {
         sel('wall', 'Обои чата', [['aurora', 'Северное сияние'], ['grid', 'Сетка'], ['stars', 'Звёзды'], ['sunset', 'Закат'], ['forest', 'Лес'], ['none', 'Без обоев']]),
         sel('fs', 'Размер текста', [['s', 'Мелкий'], ['m', 'Обычный'], ['l', 'Крупный'], ['xl', 'Очень крупный']]),
         sel('bub', 'Форма сообщений', [['round', 'Округлая'], ['sq', 'Угловатая']]),
+        tog('glass', '💧 Жидкое стекло', 'Прозрачные стеклянные панели, блики и живой фон', render),
+        cfg.get('glass') ? rl('Размытие стекла', '', h('input', { type: 'range', min: 6, max: 44, step: 2, value: cfg.get('glassBlur'), oninput: (e) => set('glassBlur', +e.target.value) })) : null,
+        cfg.get('glass') ? rl('Прозрачность', 'Левее — прозрачнее', h('input', { type: 'range', min: 6, max: 40, step: 2, value: cfg.get('glassAlpha'), oninput: (e) => set('glassAlpha', +e.target.value) })) : null,
         tog('compact', 'Компактный режим', 'Меньше отступов между сообщениями'), tog('anim', 'Анимации'), tog('h12', '12-часовой формат времени', 'Например 3:45 PM'));
     } else if (tab === 'chat') {
       out.push(h('h2', {}, 'Чаты'),
@@ -2051,7 +2120,7 @@ function openSettings(tab) {
         h('button', { class: 'btn ghost', onclick: () => { cfg.set('hiddenChats', {}); cfg.set('cleared', {}); cfg.set('hiddenMsgs', {}); cfg.set('archived', []); toast('Скрытое возвращено'); renderList(); } }, '👁 Вернуть скрытые и архивные чаты'),
         h('button', { class: 'btn ghost', style: 'color:var(--danger)', onclick: () => { if (!confirm('Сбросить все настройки оформления и уведомлений?')) return; Object.keys(DEF).forEach((k) => { if (k !== 'pin' && k !== 'pinSalt') try { localStorage.removeItem('mc_' + k); } catch { /* ignore */ } }); applyTheme(); toast('Настройки сброшены'); renderList(); render(); } }, 'Сбросить настройки'));
     } else {
-      out.push(h('h2', {}, 'MinoChat'), h('p', { class: 'tag' }, 'Версия 3.0 · ' + featCount() + ' функций'),
+      out.push(h('h2', {}, 'MinoChat'), h('p', { class: 'tag' }, 'Версия 3.1 · ' + featCount() + ' функций'),
         h('p', { class: 'hint' }, 'Это точный список того, что умеет приложение. Он одинаков на сайте, в приложении для Windows и для Android: везде один и тот же интерфейс.'),
         ...Object.entries(FEATURES).map(([g, a]) => h('details', { style: 'padding:6px 0;border-bottom:1px solid var(--line)' }, h('summary', { style: 'cursor:pointer;font-weight:600' }, g + ' (' + a.length + ')'), h('ul', { style: 'margin:6px 0 4px 18px;color:var(--muted);font-size:14px' }, a.map((x) => h('li', {}, x))))));
     }
