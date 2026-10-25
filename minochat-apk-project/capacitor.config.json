@@ -4,5 +4,6 @@
   "webDir": "www",
   "backgroundColor": "#050814",
   "android": { "allowMixedContent": false },
-  "server": { "androidScheme": "https" }
+  "server": { "androidScheme": "https" },
+  "plugins": { "CapacitorUpdater": { "autoUpdate": false, "resetWhenUpdate": true } }
 }
