@@ -3,6 +3,9 @@ on: [workflow_dispatch, push]
 jobs:
   apk:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: minochat-apk-project
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -15,10 +18,10 @@ jobs:
       - run: python3 scripts/android-setup.py
       - run: npx cap sync android
       - name: Build debug APK
-        working-directory: android
+        working-directory: minochat-apk-project/android
         run: ./gradlew assembleDebug --no-daemon
       - run: cp android/app/build/outputs/apk/debug/app-debug.apk MinoChat.apk
       - uses: actions/upload-artifact@v4
         with:
           name: MinoChat-APK
-          path: MinoChat.apk
+          path: minochat-apk-project/MinoChat.apk
