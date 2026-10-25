@@ -61,3 +61,11 @@ allprojects {
 """
     open(gp, 'w', encoding='utf8').write(g)
 print('pins added')
+
+# 5) библиотеки Google требуют Android 6.0+ (minSdk 23)
+import re as _re
+vp = 'android/variables.gradle'
+v = open(vp, encoding='utf8').read()
+v = _re.sub(r'minSdkVersion\s*=\s*\d+', 'minSdkVersion = 23', v)
+open(vp, 'w', encoding='utf8').write(v)
+print('minSdk 23')
