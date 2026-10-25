@@ -69,3 +69,29 @@ v = open(vp, encoding='utf8').read()
 v = _re.sub(r'minSdkVersion\s*=\s*\d+', 'minSdkVersion = 23', v)
 open(vp, 'w', encoding='utf8').write(v)
 print('minSdk 23')
+
+# 6) постоянный ключ подписи (чтобы SHA-1 не менялся между сборками - нужен для входа через Google)
+ap = 'android/app/build.gradle'
+a = open(ap, encoding='utf8').read()
+if 'MinoChatSign' not in a:
+    a += """
+
+// MinoChatSign
+android {
+    signingConfigs {
+        debug {
+            storeFile file('../../minochat.keystore')
+            storePassword 'minochat123'
+            keyAlias 'minochat'
+            keyPassword 'minochat123'
+        }
+    }
+}
+"""
+    open(ap, 'w', encoding='utf8').write(a)
+# 7) google-services.json (из Firebase Console) кладём куда нужно
+import os as _os, shutil as _sh
+if _os.path.exists('google-services.json'):
+    _sh.copy('google-services.json', 'android/app/google-services.json'); print('google-services.json copied')
+else:
+    print('WARNING: google-services.json not found - Google sign-in will not work on Android')
