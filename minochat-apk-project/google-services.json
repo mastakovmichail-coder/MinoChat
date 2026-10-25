@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "269701754688",
+    "project_id": "speeky-a0653",
+    "storage_bucket": "speeky-a0653.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:269701754688:android:dc4a829bd075adbe5914a5",
+        "android_client_info": {
+          "package_name": "app.minochat.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "269701754688-abe1ph77iv160q0ogk7886vmfnmh2qkk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbfyQIaiswt--uZzMNFaGZBI_uFk-JcwI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "269701754688-abe1ph77iv160q0ogk7886vmfnmh2qkk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
