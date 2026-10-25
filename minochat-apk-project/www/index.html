@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050814">
+<meta name="ui-version" content="3.2.0">
 <link rel="icon" id="fav" type="image/png" href="favicon.png">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -303,6 +304,11 @@ body{position:fixed;inset:0;width:100%;height:100%;overscroll-behavior:none;touc
 [data-glass=on] .modal{background:rgba(10,20,60,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 [data-glass=on] .lockscr{background:linear-gradient(135deg,#2547c9,#7b2fd6,#0aa6d8)}
 [data-glass=on] .badge{background:linear-gradient(150deg,#ff6b88,#e0214a);box-shadow:0 0 14px rgba(255,70,110,.7),inset 0 1px 0 rgba(255,255,255,.6)}
+.vb{display:inline-grid;place-items:center;vertical-align:-2px;margin-left:5px;width:17px;height:17px;border-radius:50%;background:linear-gradient(135deg,#2f6bff,#27c4ff);box-shadow:0 0 10px rgba(47,140,255,.7)}
+.vb.gold{background:linear-gradient(135deg,#ffb300,#ffe066);box-shadow:0 0 10px rgba(255,190,40,.8)}
+.vb svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+.dev .urow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.dev .urow .nm{flex:1;min-width:0}.dev .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.dev .ban{color:var(--danger)}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -714,7 +720,7 @@ async function loadPeer(uid) {
 function renderMe() {
   const bar = $('#meBar'); if (!bar) return;
   bar.replaceChildren(h('div', { style: 'cursor:pointer', onclick: () => openSettings('profile') }, avatar(S.me, '', false)),
-    h('div', { class: 'nm' }, h('b', {}, S.me.name), h('small', {}, S.me.status ? S.me.status : '@' + S.me.username)),
+    h('div', { class: 'nm' }, h('b', {}, S.me.name, vmark(S.me)), h('small', {}, S.me.status ? S.me.status : '@' + S.me.username)),
     ibtn('users', 'Новая группа (Ctrl+N)', openNewGroup), ibtn('gear', 'Настройки (Ctrl+,)', () => openSettings()));
 }
 
@@ -788,10 +794,15 @@ function renderList() {
   if (!chats.length && !S.results) rows.push(h('div', { class: 'empty' }, S.flt === 'arch' ? 'Архив пуст.' : S.flt === 'unr' ? 'Непрочитанных нет.' : 'Пока нет чатов.', h('br'), S.flt === 'all' ? 'Найдите человека по логину в поле выше или создайте группу.' : ''));
   list.replaceChildren(...rows);
 }
+function vmark(p) {
+  if (!p || !p.verified) return null;
+  const s = h('span', { class: 'vb' + (p.verified === 'gold' ? ' gold' : ''), title: p.verified === 'gold' ? 'Официальный аккаунт' : 'Подтверждённый аккаунт' });
+  s.innerHTML = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'; return s;
+}
 function rowEl(p, sub, time, unread, online, fn, on, title, dot, ment) {
   return h('button', { class: 'row' + (on ? ' on' : ''), onclick: fn },
     avatar(p, '', online),
-    h('div', { class: 'mid' }, h('div', { class: 't1' }, h('b', {}, title || p.name), h('span', { class: 'tm' }, time)),
+    h('div', { class: 'mid' }, h('div', { class: 't1' }, h('b', {}, title || p.name, vmark(p)), h('span', { class: 'tm' }, time)),
       h('div', { class: 't2' }, h('span', { class: 'pv' }, sub), ment ? h('span', { class: 'atb' }, '@') : null, dot ? h('span', { class: 'mdot' }) : (unread ? h('span', { class: 'badge' }, unread > 99 ? '99+' : unread) : null))));
 }
 function chatMenu(x, y, c) {
@@ -915,6 +926,7 @@ function modal(content, wide) {
 
 /* ---------- правая часть ---------- */
 function composerMode() {
+  if (S.me && S.me.banned) return 'banned';
   const c = chatOf(S.active); if (!c || isGroup(c) || isSaved(c)) return (c && isGroup(c) && c.onlyAdmins && !(c.admins || []).includes(S.user.uid)) ? 'ro' : 'ok';
   const u = otherOf(S.active);
   return iBlocked(u) ? 'iblock' : blockedMe(u) ? 'blocked' : 'ok';
@@ -938,7 +950,7 @@ function renderComposer() {
   const mode = composerMode(); S.cmode = mode;
   if (mode !== 'ok') {
     const u = otherOf(S.active);
-    return box.replaceChildren(h('div', { class: 'blk' }, mode === 'iblock' ? ['Вы заблокировали этого человека. ', h('button', { class: 'link', style: 'display:inline;margin:0', onclick: () => unblockUser(u) }, 'Разблокировать')] : mode === 'ro' ? 'В этой группе писать могут только администраторы.' : 'Этот пользователь ограничил входящие сообщения.'));
+    return box.replaceChildren(h('div', { class: 'blk' }, mode === 'iblock' ? ['Вы заблокировали этого человека. ', h('button', { class: 'link', style: 'display:inline;margin:0', onclick: () => unblockUser(u) }, 'Разблокировать')] : mode === 'banned' ? 'Ваш аккаунт ограничен администрацией MinoChat. Писать сообщения нельзя.' : mode === 'ro' ? 'В этой группе писать могут только администраторы.' : 'Этот пользователь ограничил входящие сообщения.'));
   }
   const ta = h('textarea', { id: 'inp', rows: 1, placeholder: 'Сообщение…', oninput: onType, onpaste: onPaste, onkeydown: onInpKey });
   ta.value = S.drafts[S.active] || '';
@@ -1014,7 +1026,7 @@ function renderHeader() {
     const sub = h('small', { class: isOnline(p) || typing ? 'live' : '' });
     if (typing) { sub.append(tv < 0 ? 'записывает голосовое' : 'печатает', h('span', { class: 'typing' }, h('span'), h('span'), h('span'))); setTimeout(renderHeader, 5200); } else sub.textContent = (p.status ? p.status + ' · ' : '') + st;
     const canCall = uid !== S.user.uid && composerMode() === 'ok';
-    head.replaceChildren(back, h('div', { style: 'cursor:pointer', onclick: () => openProfile(uid) }, avatar(p, 'sm', isOnline(p))), h('div', { class: 'nm', style: 'cursor:pointer', onclick: () => openProfile(uid) }, h('b', {}, peerName(uid) + bd + tag), sub),
+    head.replaceChildren(back, h('div', { style: 'cursor:pointer', onclick: () => openProfile(uid) }, avatar(p, 'sm', isOnline(p))), h('div', { class: 'nm', style: 'cursor:pointer', onclick: () => openProfile(uid) }, h('b', {}, peerName(uid) + bd + tag, vmark(p)), sub),
       canCall ? ibtn('phone', 'Голосовой звонок', () => startCall('audio')) : null, canCall ? ibtn('video', 'Видеозвонок', () => startCall('video')) : null, srch, dots);
   }
   if (composerMode() !== S.cmode) renderComposer();
@@ -1158,7 +1170,7 @@ function msgEl(m, me, peerRead, grp, hl) {
     oncontextmenu: (e) => { e.preventDefault(); openMenu(e.clientX, e.clientY, m); },
     onclick: () => { if (S.sel && S.sel.size) toggleSel(m.id); }, ondblclick: () => { if (!m.deleted && !(S.sel && S.sel.size)) react(m, '❤️', true); } },
     selOn ? h('span', { class: 'chk' }, S.sel.has(m.id) ? '✓' : '') : null,
-    (grp && !mine && !m.deleted) ? h('div', { class: 'sname', style: 'color:' + colorOf(m.from) }, peerName(m.from)) : null, bub, rx.length ? h('div', { class: 'rx' }, rx) : null);
+    (grp && !mine && !m.deleted) ? h('div', { class: 'sname', style: 'color:' + colorOf(m.from) }, peerName(m.from), vmark(S.peers[m.from])) : null, bub, rx.length ? h('div', { class: 'rx' }, rx) : null);
   if (!m.deleted && !selOn) { const mb = h('button', { class: 'more', title: 'Действия', onclick: (e) => { e.stopPropagation(); const r = e.currentTarget.getBoundingClientRect(); openMenu(r.left, r.bottom, m); } }, '⋯'); el.append(mb); }
   let lp = null, sx = 0, sy = 0, swiped = false, lastTap = 0;
   el.addEventListener('touchstart', (e) => { if (m.deleted) return; const t = e.touches[0]; sx = t.clientX; sy = t.clientY; swiped = false; lp = setTimeout(() => openMenu(t.clientX, t.clientY, m), 450); }, { passive: true });
@@ -1651,7 +1663,7 @@ async function openProfile(uid) {
   const common = S.chats.filter((c) => isGroup(c) && (c.members || []).includes(uid));
   const bd = p.bday ? new Date(p.bday + 'T00:00:00').toLocaleDateString('ru', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
   const link = location.origin + location.pathname + '?u=' + p.username;
-  const mm = modal([av, h('h1', { class: 'brand', style: 'font-size:24px' }, peerName(uid)), h('p', { class: 'tag' }, '@' + p.username + (cfg.get('nick')[uid] ? ' · ' + p.name : '')),
+  const mm = modal([av, h('h1', { class: 'brand', style: 'font-size:24px' }, peerName(uid), vmark(p)), h('p', { class: 'tag' }, '@' + p.username + (cfg.get('nick')[uid] ? ' · ' + p.name : '')),
     p.status ? h('p', { style: 'text-align:center' }, p.status) : null,
     p.bio ? h('p', { style: 'text-align:center;white-space:pre-wrap;color:var(--muted)' }, p.bio) : null,
     h('p', { class: 'hint', style: 'text-align:center' }, p.hideSeen ? 'был(а) недавно' : isOnline(p) ? 'в сети' : (p.lastSeen ? 'был(а) ' + fmtDay(p.lastSeen).toLowerCase() + ' в ' + fmtTime(p.lastSeen) : '')),
@@ -2017,9 +2029,79 @@ const FEATURES = {
   'Списки чатов': ['Фильтры: все, непрочитанные, личные, группы', 'Архив чатов', 'Закрепление чатов', 'Отметить непрочитанным', 'Скрытие и очистка чата у себя', 'Выключение уведомлений на время', 'Свои имена контактов', 'Сортировка', 'Поиск людей по логину', 'Ссылка на профиль (?u=логин)', 'Быстрый переход Ctrl+K'],
   'Приватность и безопасность': ['Чёрный список', 'Скрыть «был(а) в сети»', 'Не отправлять «прочитано»', 'PIN-код на вход', 'Автоблокировка по таймеру', 'Несколько аккаунтов', 'Выход из аккаунта'],
   'Уведомления': ['Всплывающие уведомления', 'Предпросмотр текста', 'Звуки: 6 мелодий, громкость', 'Звук отправки', 'Режим «не беспокоить» по расписанию', 'Счётчик в заголовке вкладки и значке', 'Мигание заголовка'],
+  'Администрирование': ['Синяя и золотая галочки у профилей', 'Блокировка аккаунтов администрацией', 'Панель разработчика под паролем (галочки, баны, правка профилей и групп)'],
   'Данные': ['Работа офлайн (кэш)', 'Индикатор отсутствия сети', 'Экспорт чата в файл', 'Экспорт и импорт настроек', 'Статистика', 'Сброс настроек', 'Установка как приложение (PWA)'],
 };
 const featCount = () => Object.values(FEATURES).reduce((n, a) => n + a.length, 0);
+
+/* ---------- обновления ---------- */
+const UPD_BASE = 'https://speeky-a0653.web.app';
+const uiVer = () => { const m = document.querySelector('meta[name=ui-version]'); return m ? m.content : '3.1.0'; };
+const verNum = (v) => String(v).split('.').reduce((a, x) => a * 1000 + (parseInt(x, 10) || 0), 0);
+async function checkUpdate() {
+  try {
+    const r = await fetch(UPD_BASE + '/update/version.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return 'Не удалось проверить обновления';
+    const j = await r.json();
+    if (verNum(j.version) <= verNum(uiVer())) return '✅ Установлена последняя версия (' + uiVer() + ')';
+    if (window.__nativeUpdate) { window.__nativeUpdate(j); return '⬇ Скачиваю версию ' + j.version + '… приложение перезапустится само'; }
+    if (/Electron/.test(navigator.userAgent)) return 'Вышла версия ' + j.version + '. Она скачается сама, закройте MinoChat из трея и откройте снова.';
+    return 'Вышла версия ' + j.version + '. Обновите страницу (Ctrl+F5).';
+  } catch { return 'Нет связи с сервером обновлений'; }
+}
+
+
+/* ---------- режим разработчика ---------- */
+const DEV_HASH = '35b6422b480dc12bf632c8ab2b4a9bf7f102889e029721b01939f5e8ed5f5bdb';
+async function devHash(pw) { return sha('minochat-dev:' + pw); }
+function devUnlockBox(close) {
+  const pw = h('input', { class: 'inp', type: 'password', placeholder: 'Пароль разработчика', autocomplete: 'off' }), msg = h('div', { class: 'hint' });
+  return h('div', { style: 'margin-top:18px;padding-top:10px;border-top:1px solid var(--line)' }, h('div', { class: 'sect', style: 'margin-left:0' }, 'Для разработчика'), pw, msg,
+    h('button', { class: 'btn ghost', onclick: async () => {
+      if ((await devHash(pw.value)) !== DEV_HASH) { msg.textContent = 'Неверный пароль'; return; }
+      pw.value = '';
+      let ok = false; try { ok = (await db.collection('admins').doc(S.user.uid).get()).exists; } catch { ok = false; }
+      if (!ok) {
+        msg.replaceChildren('Пароль верный, но этот аккаунт ещё не назначен админом. В Firebase Console → Firestore → Start collection: admins → Document ID вставьте ваш UID: ',
+          h('code', { class: 'k', style: 'user-select:all' }, S.user.uid), ' → добавьте любое поле (например ok = true) → Save. Затем повторите.');
+        return;
+      }
+      close(); openDevPanel();
+    } }, 'Открыть панель'));
+}
+function openDevPanel() {
+  const wrap = h('div', { class: 'dev' }), mm = modal(wrap, true);
+  const q = h('input', { class: 'inp', placeholder: 'Найти пользователя по логину…', autocomplete: 'off' }), list = h('div', { class: 'mscroll', style: 'max-height:50vh' });
+  const setU = async (u, patch, okMsg) => { try { await db.collection('users').doc(u.uid).update(patch); Object.assign(u, patch); Object.keys(patch).forEach((k) => { if (patch[k] && patch[k].__fv) delete u[k]; }); if (S.peers[u.uid]) Object.assign(S.peers[u.uid], u); toast(okMsg || 'Готово'); drawUsers(lastRes); renderList(); } catch (e) { toast(errText(e, 'админ')); } };
+  let lastRes = [];
+  const drawUsers = (res) => {
+    lastRes = res;
+    list.replaceChildren(...(res.length ? res : [h('div', { class: 'empty' }, 'Никого не найдено')]).map((u) => !u.uid ? u : h('div', { class: 'urow' }, avatar(u, 'sm'),
+      h('div', { class: 'nm' }, h('b', {}, u.name, vmark(u), u.banned ? ' 🚫' : ''), h('br'), h('small', {}, '@' + u.username + ' · ' + u.uid.slice(0, 8)),
+        h('div', { class: 'acts' },
+          h('button', { class: 'sm2', onclick: () => setU(u, { verified: 'blue' }, 'Синяя галочка выдана') }, '✔ Синяя'),
+          h('button', { class: 'sm2', onclick: () => setU(u, { verified: 'gold' }, 'Золотая галочка выдана') }, '✔ Золотая'),
+          u.verified ? h('button', { class: 'sm2', onclick: () => setU(u, { verified: FV().delete() }, 'Галочка снята') }, 'Снять ✔') : null,
+          h('button', { class: 'sm2 ban', onclick: () => setU(u, { banned: !u.banned }, u.banned ? 'Разбанен' : 'Заблокирован') }, u.banned ? 'Разбанить' : '🚫 Бан'),
+          h('button', { class: 'sm2', onclick: () => { const n = prompt('Новое имя:', u.name); if (n && n.trim().length >= 2) setU(u, { name: n.trim().slice(0, 40) }, 'Имя изменено'); } }, '✏️ Имя'),
+          h('button', { class: 'sm2', onclick: () => { if (confirm('Очистить фото, «о себе» и статус?')) setU(u, { photo: '', bio: '', status: '' }, 'Профиль очищен'); } }, '🧹 Очистить'),
+          h('button', { class: 'sm2', onclick: () => { mm.remove(); openWith(u); } }, '💬 Написать'))))));
+  };
+  let t = null;
+  q.oninput = () => { clearTimeout(t); const s = q.value.trim().replace(/^@/, '').toLowerCase(); if (s.length < 2) return drawUsers([]); t = setTimeout(async () => { try { drawUsers(await findUsers(s)); } catch (e) { toast(errText(e, 'поиск')); } }, 250); };
+  const gl = h('div', { class: 'mscroll', style: 'max-height:30vh' });
+  const loadGroups = async () => {
+    try {
+      const sn = await db.collection('chats').where('isGroup', '==', true).limit(40).get();
+      const gs = []; sn.forEach((d) => gs.push({ id: d.id, ...d.data() }));
+      gl.replaceChildren(...(gs.length ? gs : [h('div', { class: 'empty' }, 'Групп нет')]).map((g) => !g.id ? g : h('div', { class: 'urow' }, avatar({ uid: g.id, name: g.name, photo: g.photo }, 'sm'), h('div', { class: 'nm' }, h('b', {}, g.name), h('br'), h('small', {}, (g.members || []).length + ' участн.')),
+        h('button', { class: 'sm2', onclick: async () => { const n = prompt('Новое название группы:', g.name); if (n && n.trim()) { try { await db.collection('chats').doc(g.id).update({ name: n.trim().slice(0, 60) }); toast('Переименовано'); loadGroups(); } catch (e) { toast(errText(e)); } } } }, '✏️'),
+        h('button', { class: 'sm2 ban', onclick: async () => { if (!confirm('Удалить группу «' + g.name + '» у всех?')) return; try { await db.collection('chats').doc(g.id).delete(); toast('Группа удалена'); loadGroups(); } catch (e) { toast(errText(e)); } } }, '🗑'))));
+    } catch (e) { gl.replaceChildren(h('div', { class: 'empty' }, errText(e, 'группы'))); }
+  };
+  wrap.append(h('h1', { class: 'brand', style: 'font-size:22px' }, '🛠 Режим разработчика'), h('p', { class: 'tag' }, 'Галочки, блокировки и правки профилей. Личные переписки недоступны.'), q, list, h('div', { class: 'sect', style: 'margin-left:0' }, 'Группы'), gl);
+  loadGroups();
+}
 
 /* ---------- настройки ---------- */
 function openSettings(tab) {
@@ -2120,9 +2202,11 @@ function openSettings(tab) {
         h('button', { class: 'btn ghost', onclick: () => { cfg.set('hiddenChats', {}); cfg.set('cleared', {}); cfg.set('hiddenMsgs', {}); cfg.set('archived', []); toast('Скрытое возвращено'); renderList(); } }, '👁 Вернуть скрытые и архивные чаты'),
         h('button', { class: 'btn ghost', style: 'color:var(--danger)', onclick: () => { if (!confirm('Сбросить все настройки оформления и уведомлений?')) return; Object.keys(DEF).forEach((k) => { if (k !== 'pin' && k !== 'pinSalt') try { localStorage.removeItem('mc_' + k); } catch { /* ignore */ } }); applyTheme(); toast('Настройки сброшены'); renderList(); render(); } }, 'Сбросить настройки'));
     } else {
-      out.push(h('h2', {}, 'MinoChat'), h('p', { class: 'tag' }, 'Версия 3.1 · ' + featCount() + ' функций'),
+      out.push(h('h2', {}, 'MinoChat'), h('p', { class: 'tag' }, 'Версия ' + uiVer() + ' · ' + featCount() + ' функций'),
+        h('button', { class: 'btn ghost', onclick: async (e) => { const b = e.currentTarget; b.textContent = 'Проверяю…'; b.textContent = await checkUpdate(); } }, '🔄 Проверить обновления'),
         h('p', { class: 'hint' }, 'Это точный список того, что умеет приложение. Он одинаков на сайте, в приложении для Windows и для Android: везде один и тот же интерфейс.'),
-        ...Object.entries(FEATURES).map(([g, a]) => h('details', { style: 'padding:6px 0;border-bottom:1px solid var(--line)' }, h('summary', { style: 'cursor:pointer;font-weight:600' }, g + ' (' + a.length + ')'), h('ul', { style: 'margin:6px 0 4px 18px;color:var(--muted);font-size:14px' }, a.map((x) => h('li', {}, x))))));
+        ...Object.entries(FEATURES).map(([g, a]) => h('details', { style: 'padding:6px 0;border-bottom:1px solid var(--line)' }, h('summary', { style: 'cursor:pointer;font-weight:600' }, g + ' (' + a.length + ')'), h('ul', { style: 'margin:6px 0 4px 18px;color:var(--muted);font-size:14px' }, a.map((x) => h('li', {}, x))))),
+        devUnlockBox(() => m.remove()));
     }
     body.replaceChildren(...out.filter(Boolean));
   };

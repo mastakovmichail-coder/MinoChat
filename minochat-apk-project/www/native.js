@@ -25,3 +25,37 @@
     });
   } catch { /* ignore */ }
 })();
+
+/* ---------- автообновление интерфейса (без переустановки APK) ---------- */
+(function () {
+  const C = window.Capacitor;
+  if (!C || !C.isNativePlatform || !C.isNativePlatform()) return;
+  const CU = C.Plugins && C.Plugins.CapacitorUpdater;
+  if (!CU) return;
+  const BASE = 'https://speeky-a0653.web.app';
+  const num = (v) => String(v).split('.').reduce((a, x) => a * 1000 + (parseInt(x, 10) || 0), 0);
+  const cur = () => { const m = document.querySelector('meta[name=ui-version]'); return m ? m.content : '0.0.0'; };
+  let busy = false;
+  const say = (t) => { try { if (typeof toast === 'function') toast(t); } catch { /* ignore */ } };
+  async function apply(j) {
+    if (busy) return; busy = true;
+    try {
+      say('Скачиваю обновление ' + j.version + '…');
+      const b = await CU.download({ url: BASE + '/' + j.zip.replace(/^\//, ''), version: j.version });
+      say('Обновление готово, перезапускаю…');
+      setTimeout(() => CU.set(b), 1200);
+    } catch (e) { busy = false; say('Не удалось обновить интерфейс'); }
+  }
+  window.__nativeUpdate = apply;
+  async function check() {
+    try {
+      const r = await fetch(BASE + '/update/version.json?t=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
+      const j = await r.json(); if (num(j.version) > num(cur())) apply(j);
+    } catch { /* нет сети */ }
+  }
+  // сообщаем плагину, что новая версия запустилась нормально (иначе он откатит обновление)
+  try { CU.notifyAppReady(); } catch { /* ignore */ }
+  setTimeout(check, 4000);
+  try { const A = C.Plugins.App; if (A) A.addListener('appStateChange', (s) => { if (s && s.isActive) setTimeout(check, 1500); }); } catch { /* ignore */ }
+  setInterval(check, 30 * 60 * 1000);
+})();
