@@ -36,31 +36,22 @@ for d in os.listdir(RES):
     if d.startswith('drawable') and os.path.exists(RES + '/' + d + '/splash.png'): sp.save(RES + '/' + d + '/splash.png')
 print('android setup done')
 
-# 4) плагины тянут новейшие androidx-библиотеки, которым нужен compileSdk 35, а наш Gradle собирает на 34.
-#    Фиксируем версии, совместимые с 34.
-gp = 'android/build.gradle'
-g = open(gp, encoding='utf8').read()
-if 'MinoChatPins' not in g:
-    g += """
-
-// MinoChatPins
-allprojects {
-    configurations.all {
-        resolutionStrategy {
-            force 'androidx.work:work-runtime:2.9.1'
-            force 'androidx.work:work-runtime-ktx:2.9.1'
-            force 'androidx.core:core:1.13.1'
-            force 'androidx.core:core-ktx:1.13.1'
-            force 'androidx.activity:activity:1.9.3'
-            force 'androidx.lifecycle:lifecycle-runtime:2.8.7'
-            force 'androidx.navigation:navigation-common:2.8.5'
-            force 'androidx.navigation:navigation-runtime:2.8.5'
-        }
-    }
-}
-"""
-    open(gp, 'w', encoding='utf8').write(g)
-print('pins added')
+# 4) современный инструментарий (Android 15, AGP 8.7, Gradle 8.9): плагины рассчитаны на него,
+#    поэтому никаких принудительных понижений версий библиотек не нужно (они ломали запуск приложения).
+import re as _re0
+bp = 'android/build.gradle'
+b = open(bp, encoding='utf8').read()
+b = _re0.sub(r"com\.android\.tools\.build:gradle:[\d.]+", "com.android.tools.build:gradle:8.7.2", b)
+open(bp, 'w', encoding='utf8').write(b)
+wp = 'android/gradle/wrapper/gradle-wrapper.properties'
+w = open(wp, encoding='utf8').read()
+w = _re0.sub(r"gradle-[\d.]+-(all|bin)\.zip", "gradle-8.9-all.zip", w)
+open(wp, 'w', encoding='utf8').write(w)
+vp0 = 'android/variables.gradle'
+v0 = open(vp0, encoding='utf8').read()
+v0 = _re0.sub(r"compileSdkVersion\s*=\s*\d+", "compileSdkVersion = 35", v0)
+open(vp0, 'w', encoding='utf8').write(v0)
+print('toolchain updated')
 
 # 5) библиотеки Google требуют Android 6.0+ (minSdk 23)
 import re as _re
