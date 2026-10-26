@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050814">
-<meta name="ui-version" content="3.5.0">
+<meta name="ui-version" content="3.6.0">
 <link rel="icon" id="fav" type="image/png" href="favicon.png">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -639,7 +639,7 @@ const chatOf = (id) => S.chats.find((c) => c.id === id);
 const isGroup = (c) => !!(c && c.isGroup);
 const othersOf = (c) => ((c && c.members) || []).filter((u) => u !== S.user.uid);
 const isSaved = (c) => !!c && !c.isGroup && (c.members || []).length === 2 && c.members[0] === c.members[1];
-const otherOf = (id) => { const c = chatOf(id); if (isGroup(c)) return null; return id.split('_').find((x) => x !== S.user.uid) || S.user.uid; };
+const otherOf = (id) => { const c = chatOf(id); if (isGroup(c)) return null; const me = S.user.uid; if (c && c.members && c.members.length === 2) return c.members.find((x) => x !== me) || me; if (id.startsWith(me + '_')) return id.slice(me.length + 1); if (id.endsWith('_' + me)) return id.slice(0, -(me.length + 1)); return me; };
 const isOnline = (p) => p && p.lastSeen && !p.hideSeen && Date.now() - p.lastSeen < 75000;
 const realName = (u) => (u === S.user.uid ? S.me.name : ((S.peers[u] || {}).name || '…'));
 const peerName = (u) => (u === S.user.uid ? S.me.name : (cfg.get('nick')[u] || realName(u)));
@@ -912,7 +912,7 @@ function subMsgs(id) {
     S.msgs = snap.docs.map((d) => ({ id: d.id, ...d.data(), _p: !!(d.metadata && d.metadata.hasPendingWrites) }));
     const box = $('#msgs'), far = box && box.scrollHeight - box.scrollTop - box.clientHeight > 300;
     const last = S.msgs[S.msgs.length - 1];
-    if (!snap.size && !snap.metadata.fromCache && isBotChat(id) && !botHello[id]) { botHello[id] = 1; botSay(id, BOT_HELLO); }
+    if (!snap.size && !snap.metadata.fromCache && isBotChat(id) && !botHello[id]) { botHello[id] = 1; botSay(id, BOT_TEXT[botOf(id)], botOf(id)); }
     if (far && last && last.id !== prevLast && last.from !== S.user.uid && prevN) { S.newBelow++; renderFab(); }
     if (last && last.id !== prevLast && last.from !== S.user.uid && prevN && /🎉/.test(last.text || '')) confetti();
     renderMsgs(); markRead();
@@ -984,7 +984,7 @@ function renderComposer() {
   }
   const ta = h('textarea', { id: 'inp', rows: 1, placeholder: 'Сообщение…', oninput: onType, onpaste: onPaste, onkeydown: onInpKey });
   ta.value = S.drafts[S.active] || '';
-  box.replaceChildren(h('div', { id: 'ctx' }), h('div', { class: 'comp', id: 'comp' }, ibtn('smile', 'Эмодзи и стикеры', toggleEmoji), ibtn('clip', 'Прикрепить', (e) => { const r = e.currentTarget.getBoundingClientRect(); e.stopPropagation(); popMenu(r.left, r.top - 330, [['🖼 Фото', () => $('#file').click()], ['📎 Файл', () => $('#fileAny').click()], ['📊 Опрос', openPoll], ['📍 Геопозиция', sendGeo], ['👤 Моя визитка', sendCard], ['⚡ Быстрые ответы', quickReplies], ['🎙 Диктовать текст', dictate]]); }), isBotChat(S.active) ? h('button', { class: 'botmenu', title: 'Меню бота', onclick: openBotMenu }, '☰ Меню') : null, ta, ibtn('mic', 'Голосовое сообщение', startRec),
+  box.replaceChildren(h('div', { id: 'ctx' }), h('div', { class: 'comp', id: 'comp' }, ibtn('smile', 'Эмодзи и стикеры', toggleEmoji), ibtn('clip', 'Прикрепить', (e) => { const r = e.currentTarget.getBoundingClientRect(); e.stopPropagation(); popMenu(r.left, r.top - 330, [['🖼 Фото', () => $('#file').click()], ['📎 Файл', () => $('#fileAny').click()], ['📊 Опрос', openPoll], ['📍 Геопозиция', sendGeo], ['👤 Моя визитка', sendCard], ['⚡ Быстрые ответы', quickReplies], ['🎙 Диктовать текст', dictate]]); }), botMenuBtn(), ta, ibtn('mic', 'Голосовое сообщение', startRec),
     (() => { const b = h('button', { class: 'send', title: 'Отправить', onclick: submit }); b.innerHTML = ICON.send; return b; })(),
     h('div', { class: 'recbar' }, h('i', { class: 'recdot' }), h('span', { id: 'recT' }, '0:00'), h('span', { class: 'grow' }, 'Идёт запись…'), ibtn('x', 'Отмена', () => stopRec(false)),
       (() => { const b = h('button', { class: 'send', title: 'Отправить запись', onclick: () => stopRec(true) }); b.innerHTML = ICON.send; return b; })()),
@@ -1369,7 +1369,7 @@ async function submit() {
   if (/🎉|с днём рождения/i.test(text)) confetti();
   const cid = S.active;
   await sendMsg(text, 'text');
-  if (isBotChat(cid)) botReact(cid, text);
+  if (isBotChat(cid)) botDispatch(cid, text);
 }
 async function sendMsg(text, type, extra, chatId) {
   const id = chatId || S.active; if (!id) return;
@@ -1974,25 +1974,37 @@ function endCall(notify) {
   }
 }
 /* ---------- бот @botmaker ---------- */
-const BOT = 'botmaker', botHello = {};
+const BOT = 'botmaker', WBOT = 'weather_helper_bot', botHello = {};
+const BOTS = {
+  botmaker: { name: 'MinoChat BotMaker', bio: 'Помогаю создавать ботов для MinoChat. Напишите мне!', color: '#2f6bff' },
+  weather_helper_bot: { name: 'Погодный помощник', bio: 'Погода в любом городе: сейчас, на неделю и осадки', color: '#06b6d4' },
+};
+const botOf = (id) => { const o = id ? otherOf(id) : null; return o && BOTS[o] ? o : null; };
 const BOT_HELLO = 'Добро пожаловать в бота! 👋\nЕсли хотите создать какого-нибудь бота, скажите, какое у него будет имя, юзернейм и функции.\n\nИмя и юзернейм заполняются в отдельном меню — кнопка «Меню» рядом с кнопкой отправки сообщения. Заполните там всё и отправьте мне прямо из меню — я прочитаю и расскажу, что дальше.';
-const isBotChat = (id) => !!id && otherOf(id) === BOT;
+const isBotChat = (id) => !!botOf(id);
+const BOT_TEXT = {
+  botmaker: BOT_HELLO,
+  weather_helper_bot: 'Привет! Я Погодный помощник 🌦\n\nНажмите «🌦 Погода» рядом с кнопкой отправки и найдите город — я покажу, сколько градусов сейчас, погоду на неделю и какие будут осадки.\n\nМожно и проще: просто напишите название города, например «Вологда».',
+};
 async function ensureBot() {
-  try {
-    const r = db.collection('users').doc(BOT), s = await r.get(); if (s.exists) return;
-    const b = db.batch();
-    b.set(db.collection('usernames').doc(BOT), { uid: BOT });
-    b.set(r, { uid: BOT, name: 'MinoChat BotMaker', username: 'botmaker', usernameLower: 'botmaker', photo: '', bio: 'Помогаю создавать ботов для MinoChat. Напишите мне!', status: 'бот', bot: true, color: '#2f6bff', createdAt: Date.now() });
-    await b.commit();
-  } catch { /* не критично */ }
+  for (const id of Object.keys(BOTS)) {
+    try {
+      const r = db.collection('users').doc(id), s = await r.get(); if (s.exists) continue;
+      const b = db.batch();
+      b.set(db.collection('usernames').doc(id), { uid: id });
+      b.set(r, { uid: id, name: BOTS[id].name, username: id, usernameLower: id, photo: '', bio: BOTS[id].bio, status: 'бот', bot: true, color: BOTS[id].color, createdAt: Date.now() });
+      await b.commit();
+    } catch { /* не критично */ }
+  }
 }
-async function botSay(chatId, text) {
+async function botSay(chatId, text, uid) {
+  uid = uid || BOT;
   await new Promise((r) => setTimeout(r, 700));
   const ts = Date.now();
   try {
     const ref = db.collection('chats').doc(chatId), b = db.batch();
-    b.set(ref.collection('messages').doc(), { from: BOT, text, type: 'text', ts, replyTo: null, edited: false, reactions: {}, deleted: false });
-    b.update(ref, { lastMsg: { text: text.slice(0, 200), from: BOT, ts }, lastTs: ts });
+    b.set(ref.collection('messages').doc(), { from: uid, text, type: 'text', ts, replyTo: null, edited: false, reactions: {}, deleted: false });
+    b.update(ref, { lastMsg: { text: text.slice(0, 200), from: uid, ts }, lastTs: ts });
     await b.commit();
   } catch (e) { toast(errText(e, 'бот')); }
 }
@@ -2017,6 +2029,83 @@ async function botReact(chatId, text, form) {
   } catch (e) { return botSay(chatId, 'Не получилось сохранить заявку (' + errText(e) + '). Отправьте описание функций ещё раз.'); }
   botSay(chatId, 'Принято! ✅ Заявка на бота «' + w.name + '» (@' + w.username + ') записана вместе с вашими функциями. Я выработаю все функции и добавлю их в бота сам.');
 }
+
+/* ---------- Погодный помощник ---------- */
+const WX = { 0: ['Ясно', '☀️'], 1: ['Преимущественно ясно', '🌤'], 2: ['Переменная облачность', '⛅'], 3: ['Пасмурно', '☁️'], 45: ['Туман', '🌫'], 48: ['Изморозь', '🌫'],
+  51: ['Лёгкая морось', '🌦'], 53: ['Морось', '🌦'], 55: ['Сильная морось', '🌧'], 56: ['Ледяная морось', '🌧'], 57: ['Ледяная морось', '🌧'],
+  61: ['Небольшой дождь', '🌦'], 63: ['Дождь', '🌧'], 65: ['Сильный дождь', '🌧'], 66: ['Ледяной дождь', '🌧'], 67: ['Ледяной дождь', '🌧'],
+  71: ['Небольшой снег', '🌨'], 73: ['Снег', '🌨'], 75: ['Сильный снегопад', '❄️'], 77: ['Снежная крупа', '🌨'],
+  80: ['Ливень', '🌦'], 81: ['Ливень', '🌧'], 82: ['Сильный ливень', '⛈'], 85: ['Снегопад', '🌨'], 86: ['Сильный снегопад', '❄️'],
+  95: ['Гроза', '⛈'], 96: ['Гроза с градом', '⛈'], 99: ['Гроза с сильным градом', '⛈'] };
+const wxInfo = (c) => WX[c] || ['—', '🌡'];
+const wxT = (t) => { const r = Math.round(t); return r > 0 ? '+' + r + '°' : r < 0 ? '−' + (-r) + '°' : '0°'; };
+const wxMm = (x) => (Math.round(x * 10) / 10).toString().replace('.', ',');
+const wxIsSnow = (c) => (c >= 71 && c <= 77) || c === 85 || c === 86;
+const wxIsRain = (c) => (c >= 51 && c <= 67) || (c >= 80 && c <= 82) || c >= 95;
+async function wxFind(q) {
+  const r = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=8&language=ru&format=json&name=' + encodeURIComponent(q));
+  if (!r.ok) throw new Error('geo ' + r.status);
+  const j = await r.json(); return j.results || [];
+}
+const wxLabel = (p) => [p.name, p.admin1 && p.admin1 !== p.name ? p.admin1 : '', p.country || ''].filter(Boolean).join(', ');
+async function wxReport(p) {
+  const u = 'https://api.open-meteo.com/v1/forecast?latitude=' + p.latitude + '&longitude=' + p.longitude
+    + '&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m'
+    + '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,snowfall_sum'
+    + '&timezone=auto&wind_speed_unit=ms&forecast_days=7';
+  const r = await fetch(u); if (!r.ok) throw new Error('wx ' + r.status);
+  const j = await r.json(), c = j.current, d = j.daily, [cd, ci] = wxInfo(c.weather_code);
+  const L = ['🌦 ' + wxLabel(p), '', 'Сейчас: ' + wxT(c.temperature_2m) + 'C (ощущается ' + wxT(c.apparent_temperature) + 'C)', ci + ' ' + cd, '💧 Влажность ' + Math.round(c.relative_humidity_2m) + '% · 💨 ветер ' + Math.round(c.wind_speed_10m) + ' м/с'];
+  L.push(c.precipitation > 0 ? '☔ Осадки сейчас: ' + (wxIsSnow(c.weather_code) ? 'снег' : 'дождь') + ', ' + wxMm(c.precipitation) + ' мм' : '☔ Осадки сейчас: нет');
+  L.push('', '📅 На неделю:');
+  let total = 0, rainDays = 0, snowDays = 0, wet = null;
+  d.time.forEach((t, i) => {
+    const dt = new Date(t + 'T12:00'), name = dt.toLocaleDateString('ru-RU', { weekday: 'short' }), ds = t.slice(8, 10) + '.' + t.slice(5, 7);
+    const sum = d.precipitation_sum[i] || 0, pr = d.precipitation_probability_max[i], snow = (d.snowfall_sum[i] || 0) > 0.1 || wxIsSnow(d.weather_code[i]);
+    total += sum; if (sum > 0.1) { if (snow) snowDays++; else rainDays++; if (!wet || sum > wet.sum) wet = { sum, name: name.charAt(0).toUpperCase() + name.slice(1), ds }; }
+    const pc = sum > 0.1 ? (snow ? '❄️ снег ' : '🌧 дождь ') + wxMm(sum) + ' мм' + (pr != null ? ' (' + pr + '%)' : '') : 'без осадков';
+    L.push((i === 0 ? 'Сегодня' : name.charAt(0).toUpperCase() + name.slice(1)) + ' ' + ds + '  ' + wxInfo(d.weather_code[i])[1] + ' ' + wxT(d.temperature_2m_min[i]) + '…' + wxT(d.temperature_2m_max[i]) + ' · ' + pc);
+  });
+  L.push('', total > 0.1 ? '☔ За неделю осадков: ' + wxMm(total) + ' мм (дождь — ' + rainDays + ' дн., снег — ' + snowDays + ' дн.). Самый влажный день: ' + wet.name + ' ' + wet.ds + ', ' + wxMm(wet.sum) + ' мм.' : '☀️ На неделю осадков не ожидается.');
+  return L.join('\n');
+}
+async function wxAnswer(chatId, p) {
+  try { await botSay(chatId, await wxReport(p), WBOT); } catch { botSay(chatId, 'Не получилось получить погоду: нет связи с сервисом погоды. Попробуйте ещё раз чуть позже.', WBOT); }
+}
+async function weatherReact(chatId, text) {
+  const q = text.replace(/^\/start/i, '').replace(/^погода\s+(в\s+)?/i, '').trim();
+  if (!q || /^(привет|здравствуй|hi|hello|помощь|help|\/help)/i.test(q)) return botSay(chatId, BOT_TEXT[WBOT], WBOT);
+  try {
+    const res = await wxFind(q);
+    if (!res.length) return botSay(chatId, 'Не нашёл город «' + q + '». Проверьте название или нажмите «🌦 Погода» и найдите его в списке.', WBOT);
+    await wxAnswer(chatId, res[0]);
+  } catch { botSay(chatId, 'Не получилось найти город: нет связи с сервисом погоды. Попробуйте позже.', WBOT); }
+}
+function openWeather() {
+  const chatId = S.active;
+  const q = h('input', { class: 'inp', placeholder: 'Город, например: Вологда', maxlength: 60, autocomplete: 'off' }), list = h('div', { class: 'mscroll', style: 'max-height:46vh;margin-top:8px' }, h('div', { class: 'empty' }, 'Начните вводить название города'));
+  const mm = modal([h('h1', { class: 'brand', style: 'font-size:22px' }, '🌦 Погода'), h('p', { class: 'tag' }, 'Найдите город — покажу, сколько градусов сейчас, погоду на неделю и осадки.'), q, list]);
+  let t = null, seq = 0;
+  q.oninput = () => {
+    clearTimeout(t); const s = q.value.trim(), my = ++seq;
+    if (s.length < 2) return list.replaceChildren(h('div', { class: 'empty' }, 'Начните вводить название города'));
+    t = setTimeout(async () => {
+      try {
+        const res = await wxFind(s); if (my !== seq) return;
+        list.replaceChildren(...(res.length ? res : [h('div', { class: 'empty' }, 'Город не найден')]).map((p) => !p.name ? p : h('button', { class: 'row', onclick: async () => {
+          mm.remove(); await sendMsg('🌦 Погода: ' + wxLabel(p), 'text', null, chatId); wxAnswer(chatId, p);
+        } }, h('div', { class: 'mid' }, h('b', {}, p.name), h('div', { class: 'pv' }, [p.admin1, p.country].filter(Boolean).join(', '))))));
+      } catch { if (my === seq) list.replaceChildren(h('div', { class: 'empty' }, 'Нет связи с сервисом поиска городов')); }
+    }, 350);
+  };
+  q.focus();
+}
+function botMenuBtn() {
+  const b = botOf(S.active); if (!b) return null;
+  return h('button', { class: 'botmenu', title: b === WBOT ? 'Погода' : 'Меню бота', onclick: b === WBOT ? openWeather : openBotMenu }, b === WBOT ? '🌦 Погода' : '☰ Меню');
+}
+function botDispatch(chatId, text) { const b = botOf(chatId); if (b === WBOT) weatherReact(chatId, text); else if (b === BOT) botReact(chatId, text); }
+
 function openBotMenu() {
   const nm = h('input', { class: 'inp', placeholder: 'Например: Погодный помощник', maxlength: 40 }), un = h('input', { class: 'inp', placeholder: 'например weather_helper_bot', maxlength: 32, autocapitalize: 'off', spellcheck: 'false' }), err = h('div', { class: 'err' });
   const chatId = S.active;
