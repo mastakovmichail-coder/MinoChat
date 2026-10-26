@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050814">
-<meta name="ui-version" content="3.4.0">
+<meta name="ui-version" content="3.5.0">
 <link rel="icon" id="fav" type="image/png" href="favicon.png">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -177,6 +177,7 @@ mark{background:rgba(255,200,40,.45);color:inherit;border-radius:4px;padding:0 1
 .sm2{padding:6px 12px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);font-size:13px}
 .thumbs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.thumbs img{width:56px;height:56px;object-fit:contain;border-radius:10px;background:var(--panel2);cursor:pointer}
 .mscroll{max-height:42vh;overflow:auto}
+.botmenu{flex:none;height:42px;padding:0 16px;border-radius:21px;border:1px solid var(--line,rgba(255,255,255,.12));background:var(--panel2);color:var(--text);font-weight:700;font-size:14px;cursor:pointer;transition:.2s}.botmenu:hover{background:var(--grad);color:#fff;border-color:transparent}
 .blk{margin:8px 12px 12px;padding:12px;border-radius:16px;background:var(--panel2);text-align:center;color:var(--muted)}
 
 /* ---------- MinoChat: оформление ---------- */
@@ -695,6 +696,7 @@ function rememberAccount() {
   ls.set('sp_accts', JSON.stringify(a)); ls.set('sp_prev', '');
 }
 function startApp() {
+  ensureBot();
   rememberAccount();
   S.flt = cfg.get('filter') || 'all';
   root.replaceChildren(
@@ -910,6 +912,7 @@ function subMsgs(id) {
     S.msgs = snap.docs.map((d) => ({ id: d.id, ...d.data(), _p: !!(d.metadata && d.metadata.hasPendingWrites) }));
     const box = $('#msgs'), far = box && box.scrollHeight - box.scrollTop - box.clientHeight > 300;
     const last = S.msgs[S.msgs.length - 1];
+    if (!snap.size && !snap.metadata.fromCache && isBotChat(id) && !botHello[id]) { botHello[id] = 1; botSay(id, BOT_HELLO); }
     if (far && last && last.id !== prevLast && last.from !== S.user.uid && prevN) { S.newBelow++; renderFab(); }
     if (last && last.id !== prevLast && last.from !== S.user.uid && prevN && /🎉/.test(last.text || '')) confetti();
     renderMsgs(); markRead();
@@ -981,7 +984,7 @@ function renderComposer() {
   }
   const ta = h('textarea', { id: 'inp', rows: 1, placeholder: 'Сообщение…', oninput: onType, onpaste: onPaste, onkeydown: onInpKey });
   ta.value = S.drafts[S.active] || '';
-  box.replaceChildren(h('div', { id: 'ctx' }), h('div', { class: 'comp', id: 'comp' }, ibtn('smile', 'Эмодзи и стикеры', toggleEmoji), ibtn('clip', 'Прикрепить', (e) => { const r = e.currentTarget.getBoundingClientRect(); e.stopPropagation(); popMenu(r.left, r.top - 330, [['🖼 Фото', () => $('#file').click()], ['📎 Файл', () => $('#fileAny').click()], ['📊 Опрос', openPoll], ['📍 Геопозиция', sendGeo], ['👤 Моя визитка', sendCard], ['⚡ Быстрые ответы', quickReplies], ['🎙 Диктовать текст', dictate]]); }), ta, ibtn('mic', 'Голосовое сообщение', startRec),
+  box.replaceChildren(h('div', { id: 'ctx' }), h('div', { class: 'comp', id: 'comp' }, ibtn('smile', 'Эмодзи и стикеры', toggleEmoji), ibtn('clip', 'Прикрепить', (e) => { const r = e.currentTarget.getBoundingClientRect(); e.stopPropagation(); popMenu(r.left, r.top - 330, [['🖼 Фото', () => $('#file').click()], ['📎 Файл', () => $('#fileAny').click()], ['📊 Опрос', openPoll], ['📍 Геопозиция', sendGeo], ['👤 Моя визитка', sendCard], ['⚡ Быстрые ответы', quickReplies], ['🎙 Диктовать текст', dictate]]); }), isBotChat(S.active) ? h('button', { class: 'botmenu', title: 'Меню бота', onclick: openBotMenu }, '☰ Меню') : null, ta, ibtn('mic', 'Голосовое сообщение', startRec),
     (() => { const b = h('button', { class: 'send', title: 'Отправить', onclick: submit }); b.innerHTML = ICON.send; return b; })(),
     h('div', { class: 'recbar' }, h('i', { class: 'recdot' }), h('span', { id: 'recT' }, '0:00'), h('span', { class: 'grow' }, 'Идёт запись…'), ibtn('x', 'Отмена', () => stopRec(false)),
       (() => { const b = h('button', { class: 'send', title: 'Отправить запись', onclick: () => stopRec(true) }); b.innerHTML = ICON.send; return b; })()),
@@ -1049,10 +1052,10 @@ function renderHeader() {
     const uid = otherOf(id), p = S.peers[uid] || { name: '…' };
     const tv = c && c.typing && c.typing[uid], typing = tv && Date.now() - Math.abs(tv) < 5000;
     const bd = p.bday && p.bday.slice(5) === new Date().toISOString().slice(5, 10) ? ' 🎂' : '';
-    const st = p.hideSeen ? 'был(а) недавно' : isOnline(p) ? 'в сети' : (p.lastSeen ? 'был(а) ' + (fmtDay(p.lastSeen) === 'Сегодня' ? 'в ' + fmtTime(p.lastSeen) : fmtDay(p.lastSeen).toLowerCase()) : '');
+    const st = p.bot ? 'бот' : p.hideSeen ? 'был(а) недавно' : isOnline(p) ? 'в сети' : (p.lastSeen ? 'был(а) ' + (fmtDay(p.lastSeen) === 'Сегодня' ? 'в ' + fmtTime(p.lastSeen) : fmtDay(p.lastSeen).toLowerCase()) : '');
     const sub = h('small', { class: isOnline(p) || typing ? 'live' : '' });
     if (typing) { sub.append(tv < 0 ? 'записывает голосовое' : 'печатает', h('span', { class: 'typing' }, h('span'), h('span'), h('span'))); setTimeout(renderHeader, 5200); } else sub.textContent = (p.status ? p.status + ' · ' : '') + st;
-    const canCall = uid !== S.user.uid && composerMode() === 'ok';
+    const canCall = uid !== S.user.uid && composerMode() === 'ok' && !p.bot;
     head.replaceChildren(back, h('div', { style: 'cursor:pointer', onclick: () => openProfile(uid) }, avatar(p, 'sm', isOnline(p))), h('div', { class: 'nm', style: 'cursor:pointer', onclick: () => openProfile(uid) }, h('b', {}, peerName(uid) + bd + tag, vmark(p)), sub),
       canCall ? ibtn('phone', 'Голосовой звонок', () => startCall('audio')) : null, canCall ? ibtn('video', 'Видеозвонок', () => startCall('video')) : null, srch, dots);
   }
@@ -1364,7 +1367,9 @@ async function submit() {
   inp.value = ''; autosize(inp); S.drafts[S.active] = '';
   if (text[0] === '/' && runCommand(text)) return;
   if (/🎉|с днём рождения/i.test(text)) confetti();
+  const cid = S.active;
   await sendMsg(text, 'text');
+  if (isBotChat(cid)) botReact(cid, text);
 }
 async function sendMsg(text, type, extra, chatId) {
   const id = chatId || S.active; if (!id) return;
@@ -1968,6 +1973,68 @@ function endCall(notify) {
     setTimeout(async () => { try { const cs = await callRef(C.id).collection('candidates').get(); const b = db.batch(); cs.forEach((x) => b.delete(x.ref)); await b.commit(); await callRef(C.id).delete(); } catch { /* ignore */ } }, 6000);
   }
 }
+/* ---------- бот @botmaker ---------- */
+const BOT = 'botmaker', botHello = {};
+const BOT_HELLO = 'Добро пожаловать в бота! 👋\nЕсли хотите создать какого-нибудь бота, скажите, какое у него будет имя, юзернейм и функции.\n\nИмя и юзернейм заполняются в отдельном меню — кнопка «Меню» рядом с кнопкой отправки сообщения. Заполните там всё и отправьте мне прямо из меню — я прочитаю и расскажу, что дальше.';
+const isBotChat = (id) => !!id && otherOf(id) === BOT;
+async function ensureBot() {
+  try {
+    const r = db.collection('users').doc(BOT), s = await r.get(); if (s.exists) return;
+    const b = db.batch();
+    b.set(db.collection('usernames').doc(BOT), { uid: BOT });
+    b.set(r, { uid: BOT, name: 'MinoChat BotMaker', username: 'botmaker', usernameLower: 'botmaker', photo: '', bio: 'Помогаю создавать ботов для MinoChat. Напишите мне!', status: 'бот', bot: true, color: '#2f6bff', createdAt: Date.now() });
+    await b.commit();
+  } catch { /* не критично */ }
+}
+async function botSay(chatId, text) {
+  await new Promise((r) => setTimeout(r, 700));
+  const ts = Date.now();
+  try {
+    const ref = db.collection('chats').doc(chatId), b = db.batch();
+    b.set(ref.collection('messages').doc(), { from: BOT, text, type: 'text', ts, replyTo: null, edited: false, reactions: {}, deleted: false });
+    b.update(ref, { lastMsg: { text: text.slice(0, 200), from: BOT, ts }, lastTs: ts });
+    await b.commit();
+  } catch (e) { toast(errText(e, 'бот')); }
+}
+const BOT_FORM = '🤖 Заявка на бота';
+function botWaiting() {
+  const ms = S.msgs; let a = -1, b = -1, c = -1;
+  ms.forEach((m, i) => {
+    if (m.from === S.user.uid && (m.text || '').startsWith(BOT_FORM)) a = i;
+    if (m.from === BOT && (m.text || '').includes('какие функции должны быть')) b = i;
+    if (m.from === BOT && (m.text || '').startsWith('Принято!')) c = i;
+  });
+  if (a < 0 || b < a || c > b) return null;
+  const t = ms[a].text, n = /Имя: (.*)/.exec(t), u = /Юзернейм: @(\S+)/.exec(t);
+  return { name: n ? n[1] : '', username: u ? u[1] : '' };
+}
+async function botReact(chatId, text, form) {
+  if (form) return botSay(chatId, 'Отлично! 🎉 Имя «' + form.n + '», юзернейм @' + form.u + ' — записал.\n\nТеперь скажите, какие функции должны быть у бота. Если хотите предположить, какие кнопки должны быть и что они будут выполнять — скажите. Я все функции выработаю и добавлю в бота сам.');
+  const w = botWaiting();
+  if (!w) return botSay(chatId, 'Чтобы создать бота, нажмите «Меню» рядом с кнопкой отправки, заполните имя и юзернейм и отправьте мне прямо оттуда.');
+  try {
+    await db.collection('botRequests').add({ uid: S.user.uid, by: S.me.username, byName: S.me.name, botName: w.name, botUsername: w.username, funcs: text.slice(0, 2000), ts: Date.now(), status: 'new' });
+  } catch (e) { return botSay(chatId, 'Не получилось сохранить заявку (' + errText(e) + '). Отправьте описание функций ещё раз.'); }
+  botSay(chatId, 'Принято! ✅ Заявка на бота «' + w.name + '» (@' + w.username + ') записана вместе с вашими функциями. Я выработаю все функции и добавлю их в бота сам.');
+}
+function openBotMenu() {
+  const nm = h('input', { class: 'inp', placeholder: 'Например: Погодный помощник', maxlength: 40 }), un = h('input', { class: 'inp', placeholder: 'например weather_helper_bot', maxlength: 32, autocapitalize: 'off', spellcheck: 'false' }), err = h('div', { class: 'err' });
+  const chatId = S.active;
+  const mm = modal([h('h1', { class: 'brand', style: 'font-size:22px' }, 'Меню · новый бот'), h('p', { class: 'tag' }, 'Заполните имя и юзернейм. Функции вы опишете боту сообщением после отправки.'),
+    h('label', { class: 'f' }, 'Имя бота'), nm, h('label', { class: 'f' }, 'Юзернейм (латиница, цифры, _)'), un, err,
+    h('button', { class: 'btn', onclick: async () => {
+      const n = nm.value.trim(), u = un.value.trim().replace(/^@/, '');
+      const bad = (t) => { err.textContent = t; err.classList.add('on'); };
+      if (n.length < 2) return bad('Введите имя бота (минимум 2 символа)');
+      if (!/^[A-Za-z][A-Za-z0-9_]{2,31}$/.test(u)) return bad('Юзернейм: 3–32 символа, латиница, цифры и _, начинается с буквы');
+      try { const s = await db.collection('usernames').doc(u.toLowerCase()).get(); if (s.exists) return bad('Этот юзернейм уже занят, придумайте другой'); } catch { /* проверим позже */ }
+      mm.remove();
+      await sendMsg(BOT_FORM + '\nИмя: ' + n + '\nЮзернейм: @' + u, 'text', null, chatId);
+      botReact(chatId, '', { n, u });
+    } }, 'Отправить боту')]);
+  nm.focus();
+}
+
 /* =====================================================================
    MinoChat - настройки, PIN-замок, горячие клавиши, запуск
    ===================================================================== */
@@ -2137,6 +2204,7 @@ function openDevPanel() {
   let t = null;
   q.oninput = () => { clearTimeout(t); const s = q.value.trim().replace(/^@/, '').toLowerCase(); if (s.length < 2) return drawUsers([]); t = setTimeout(async () => { try { drawUsers(await findUsers(s)); } catch (e) { toast(errText(e, 'поиск')); } }, 250); };
   const gl = h('div', { class: 'mscroll', style: 'max-height:30vh' });
+  const rq = h('div', { class: 'mscroll', style: 'max-height:36vh' });
   const loadGroups = async () => {
     try {
       const sn = await db.collection('chats').where('isGroup', '==', true).limit(40).get();
@@ -2146,8 +2214,19 @@ function openDevPanel() {
         h('button', { class: 'sm2 ban', onclick: async () => { if (!confirm('Удалить группу «' + g.name + '» у всех?')) return; try { await db.collection('chats').doc(g.id).delete(); toast('Группа удалена'); loadGroups(); } catch (e) { toast(errText(e)); } } }, '🗑'))));
     } catch (e) { gl.replaceChildren(h('div', { class: 'empty' }, errText(e, 'группы'))); }
   };
-  wrap.append(h('h1', { class: 'brand', style: 'font-size:22px' }, '🛠 Режим разработчика'), h('p', { class: 'tag' }, 'Галочки, блокировки и правки профилей. Личные переписки недоступны.'), q, list, h('div', { class: 'sect', style: 'margin-left:0' }, 'Группы'), gl);
-  loadGroups();
+  wrap.append(h('h1', { class: 'brand', style: 'font-size:22px' }, '🛠 Режим разработчика'), h('p', { class: 'tag' }, 'Галочки, блокировки и правки профилей. Личные переписки недоступны.'), q, list, h('div', { class: 'sect', style: 'margin-left:0' }, 'Группы'), gl, h('div', { class: 'sect', style: 'margin-left:0' }, '🤖 Заявки на ботов'), rq);
+  const loadReqs = async () => {
+    try {
+      const sn = await db.collection('botRequests').orderBy('ts', 'desc').limit(30).get();
+      const rs = []; sn.forEach((d) => rs.push({ id: d.id, ...d.data() }));
+      rq.replaceChildren(...(rs.length ? rs : [h('div', { class: 'empty' }, 'Заявок пока нет')]).map((r) => !r.id ? r : h('div', { class: 'urow' }, h('div', { class: 'nm', style: 'width:100%' },
+        h('b', {}, (r.status === 'done' ? '✅ ' : '🆕 ') + r.botName + ' (@' + r.botUsername + ')'), h('br'), h('small', {}, 'от ' + r.byName + ' @' + r.by + ' · ' + new Date(r.ts).toLocaleString()),
+        h('div', { style: 'white-space:pre-wrap;margin:6px 0' }, r.funcs),
+        h('div', { class: 'acts' }, h('button', { class: 'sm2', onclick: async () => { try { await db.collection('botRequests').doc(r.id).update({ status: r.status === 'done' ? 'new' : 'done' }); loadReqs(); } catch (e) { toast(errText(e)); } } }, r.status === 'done' ? 'Вернуть в работу' : '✔ Готово'),
+          h('button', { class: 'sm2', onclick: () => { try { navigator.clipboard.writeText('Бот: ' + r.botName + ' (@' + r.botUsername + ')\nФункции:\n' + r.funcs); toast('Скопировано'); } catch { /* ignore */ } } }, '📋 Копировать'))))));
+    } catch (e) { rq.replaceChildren(h('div', { class: 'empty' }, errText(e, 'заявки'))); }
+  };
+  loadGroups(); loadReqs();
 }
 
 /* ---------- настройки ---------- */

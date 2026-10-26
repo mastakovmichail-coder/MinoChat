@@ -100,3 +100,115 @@ dependencies {
 """
     open(ap2, 'w', encoding='utf8').write(a2)
 print('play-services-auth added')
+
+# 9) уведомления при закрытом приложении: служба переднего плана держит MinoChat живым в фоне
+import glob as _glob
+_jd = os.path.dirname(_glob.glob('android/app/src/main/java/**/MainActivity.java', recursive=True)[0])
+_pk = 'app.minochat.mobile'
+open(_jd + '/KeepAliveService.java', 'w', encoding='utf8').write('''package %s;
+
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ServiceInfo;
+import android.os.Build;
+import android.os.IBinder;
+
+public class KeepAliveService extends Service {
+    static final String CH = "minochat_keepalive";
+
+    @Override public IBinder onBind(Intent i) { return null; }
+
+    @Override public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null && "STOP".equals(intent.getAction())) {
+            SharedPreferences p = getSharedPreferences("mc", Context.MODE_PRIVATE);
+            p.edit().putBoolean("keepalive_off", true).apply();
+            stopForeground(true);
+            stopSelf();
+            return START_NOT_STICKY;
+        }
+        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= 26) {
+            NotificationChannel c = new NotificationChannel(CH, "Работа в фоне", NotificationManager.IMPORTANCE_MIN);
+            c.setShowBadge(false);
+            nm.createNotificationChannel(c);
+        }
+        Intent open = new Intent(this, MainActivity.class);
+        open.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        int fl = PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= 23 ? PendingIntent.FLAG_IMMUTABLE : 0);
+        PendingIntent pi = PendingIntent.getActivity(this, 0, open, fl);
+        Intent stop = new Intent(this, KeepAliveService.class); stop.setAction("STOP");
+        PendingIntent ps = PendingIntent.getService(this, 1, stop, fl);
+        Notification.Builder b = Build.VERSION.SDK_INT >= 26 ? new Notification.Builder(this, CH) : new Notification.Builder(this);
+        b.setSmallIcon(getResources().getIdentifier("ic_stat_icon", "drawable", getPackageName()))
+         .setContentTitle("MinoChat")
+         .setContentText("Работает в фоне, чтобы приходили сообщения")
+         .setContentIntent(pi)
+         .setOngoing(true)
+         .addAction(new Notification.Action.Builder(null, "Выключить", ps).build());
+        Notification n = b.build();
+        if (Build.VERSION.SDK_INT >= 34) startForeground(7, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+        else startForeground(7, n);
+        return START_STICKY;
+    }
+}
+''' % _pk)
+open(_jd + '/MainActivity.java', 'w', encoding='utf8').write('''package %s;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.PowerManager;
+import android.provider.Settings;
+import com.getcapacitor.BridgeActivity;
+
+public class MainActivity extends BridgeActivity {
+    @Override public void onCreate(Bundle b) {
+        super.onCreate(b);
+        SharedPreferences p = getSharedPreferences("mc", Context.MODE_PRIVATE);
+        p.edit().putBoolean("keepalive_off", false).apply();
+        try {
+            Intent i = new Intent(this, KeepAliveService.class);
+            if (Build.VERSION.SDK_INT >= 26) startForegroundService(i); else startService(i);
+        } catch (Exception e) { /* ignore */ }
+        // один раз просим не засыпать в фоне (иначе Android может остановить связь с сервером)
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { public void run() {
+            try {
+                SharedPreferences q = getSharedPreferences("mc", Context.MODE_PRIVATE);
+                PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                if (Build.VERSION.SDK_INT >= 23 && !q.getBoolean("battery_asked", false) && !pm.isIgnoringBatteryOptimizations(getPackageName())) {
+                    q.edit().putBoolean("battery_asked", true).apply();
+                    Intent r = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:" + getPackageName()));
+                    startActivity(r);
+                }
+            } catch (Exception e) { /* ignore */ }
+        } }, 6000);
+    }
+
+    // WebView не должен «засыпать», когда приложение свернуто, иначе сообщения перестанут приходить
+    @Override public void onStop() {
+        super.onStop();
+        try { getBridge().getWebView().onResume(); getBridge().getWebView().resumeTimers(); } catch (Exception e) { /* ignore */ }
+    }
+}
+''' % _pk)
+_m = open(MAN, encoding='utf8').read()
+_perm = ''.join('    <uses-permission android:name="android.permission.%s" />\n' % p for p in ['FOREGROUND_SERVICE', 'FOREGROUND_SERVICE_SPECIAL_USE', 'WAKE_LOCK', 'REQUEST_IGNORE_BATTERY_OPTIMIZATIONS'] if p not in _m)
+_m = _m.replace('</manifest>', _perm + '</manifest>')
+if 'KeepAliveService' not in _m:
+    _m = _m.replace('</application>', '''        <service android:name=".KeepAliveService" android:exported="false" android:foregroundServiceType="specialUse">
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="messaging" />
+        </service>
+    </application>''')
+open(MAN, 'w', encoding='utf8').write(_m)
+print('keep-alive service added')
