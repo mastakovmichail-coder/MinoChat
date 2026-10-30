@@ -17,10 +17,19 @@ jobs:
       - name: Build release APK
         working-directory: android
         run: ./gradlew assembleRelease --no-daemon
-      - run: cp android/app/build/outputs/apk/release/app-release.apk MinoChat.apk
+      - name: Sign APK (v1+v2+v3) and verify
+        run: |
+          BT=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -1)
+          SRC=$(ls android/app/build/outputs/apk/release/*.apk | head -1)
+          echo "built: $SRC"
+          $BT/zipalign -f -p 4 "$SRC" aligned.apk
+          $BT/apksigner sign --ks minochat.keystore --ks-pass pass:minochat123 --ks-key-alias minochat --key-pass pass:minochat123 --v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true --out MinoChat.apk aligned.apk
+          $BT/apksigner verify --verbose --print-certs MinoChat.apk
+          if $BT/aapt dump xmltree MinoChat.apk AndroidManifest.xml | grep -i "debuggable.*0xffffffff"; then echo "ERROR: APK is still DEBUGGABLE"; exit 1; fi
+          echo "OK: release build, not debuggable"
       - uses: actions/upload-artifact@v4
         with:
-          name: MinoChat-APK
+          name: MinoChat-APK-RELEASE-3.7.3
           path: |
             MinoChat.apk
             apk.json
