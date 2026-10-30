@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050814">
-<meta name="ui-version" content="3.5.0">
+<meta name="ui-version" content="4.0.0">
 <link rel="icon" id="fav" type="image/png" href="favicon.png">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -177,6 +177,42 @@ mark{background:rgba(255,200,40,.45);color:inherit;border-radius:4px;padding:0 1
 .sm2{padding:6px 12px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);font-size:13px}
 .thumbs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.thumbs img{width:56px;height:56px;object-fit:contain;border-radius:10px;background:var(--panel2);cursor:pointer}
 .mscroll{max-height:42vh;overflow:auto}
+.app{grid-template-rows:minmax(0,1fr)}.side{height:100%;overflow:hidden}.list{min-height:0}
+.navbar{margin:0!important;display:flex;gap:2px;padding:3px 6px calc(3px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:color-mix(in srgb,var(--panel) 94%,transparent);flex:none}
+.nbtn{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 4px 4px;border-radius:14px;color:var(--muted);font-size:10.5px;font-weight:700;transition:.2s;line-height:1.2}
+.nbtn svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nbtn:hover{background:var(--panel2)}.nbtn.on{color:var(--a1);background:linear-gradient(135deg,rgba(47,107,255,.2),rgba(39,196,255,.1))}
+.nbtn .nbb{position:absolute;top:0;left:calc(50% + 4px);min-width:16px;height:16px;padding:0 5px;border-radius:9px;background:#ff4d6d;color:#fff;font-size:11px;font-style:normal;font-weight:800;display:grid;place-items:center;box-shadow:0 0 10px rgba(255,77,109,.6)}
+.app[data-tab=calls] .search,.app[data-tab=calls] .chips{display:none}
+.callhead{display:flex;justify-content:space-between;align-items:center}
+.callrow{cursor:pointer}.callrow .miss{color:#ff5d73}
+.cb2{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;flex:none;color:var(--a1);transition:.2s}.cb2:hover{background:var(--panel2)}
+.cb2 svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+[data-glass=on] .navbar{background:rgba(255,255,255,.12);backdrop-filter:blur(var(--gb,18px))}
+.stories{display:flex;gap:12px;overflow-x:auto;padding:8px 12px 4px;flex:none;scrollbar-width:none}.stories::-webkit-scrollbar{display:none}
+.app[data-tab=calls] .stories{display:none}
+.stb{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;width:64px;font-size:11.5px;color:var(--muted)}
+.stb .ring{position:relative;padding:3px;border-radius:50%;border:2px solid var(--line)}.stb .ring.on{border-color:transparent;background:conic-gradient(from 200deg,#2f6bff,#27c4ff,#7c5cff,#ec4899,#2f6bff)}
+.stb .ring .av{border:2px solid var(--panel)}.stb .ring .plus{position:absolute;right:-2px;bottom:-2px;width:20px;height:20px;border-radius:50%;background:var(--grad);color:#fff;font-style:normal;font-weight:800;display:grid;place-items:center;font-size:15px;border:2px solid var(--panel)}
+.stb span{max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stprev{height:180px;border-radius:20px;display:grid;place-items:center;padding:16px;color:#fff;font-size:22px;font-weight:700;text-align:center;margin:10px 0;word-break:break-word}
+.stview{position:fixed;inset:0;z-index:90;display:flex;flex-direction:column;color:#fff;animation:fade .2s both}
+.stbars{display:flex;gap:4px;padding:max(12px,env(safe-area-inset-top)) 12px 6px;position:relative;z-index:2}
+.stbars i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.35);overflow:hidden}.stbars i b{display:block;height:100%;width:0;background:#fff}.stbars i.done b{width:100%}.stbars i.cur b{animation:stfill 5s linear forwards}
+@keyframes stfill{to{width:100%}}
+.sthead{display:flex;align-items:center;gap:10px;padding:6px 14px;position:relative;z-index:2}.sthead .nm{flex:1;display:flex;flex-direction:column}.sthead small{opacity:.8}
+.stx{width:38px;height:38px;border-radius:50%;font-size:18px;color:#fff}
+.sttext{flex:1;display:grid;place-items:center;padding:24px 28px;font-size:clamp(22px,5vw,34px);font-weight:700;text-align:center;line-height:1.3;word-break:break-word;white-space:pre-wrap}
+.sttap{position:absolute;top:80px;bottom:70px;z-index:1}.sttap.l{left:0;width:35%}.sttap.r{right:0;width:65%}
+.stfoot{display:flex;gap:8px;justify-content:center;padding:10px 14px calc(14px + env(safe-area-inset-bottom));position:relative;z-index:2}
+.mnpop{position:absolute;left:8px;right:8px;bottom:100%;max-height:240px;overflow:auto;border-radius:16px;background:var(--panel);border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.35);z-index:20;padding:4px}
+#cbox{position:relative}
+.modal.full{padding:0;place-items:stretch;background:var(--bg,#050814)}
+.setm.full{animation:none!important;width:100%;height:100%;max-width:none;max-height:none;border-radius:0;grid-template-columns:230px 1fr;padding-top:env(safe-area-inset-top)!important}
+.setm.full .body{padding:22px max(18px,4vw);overflow:auto}
+.setm.full .nav{display:flex;flex-direction:column}
+.closefull{margin-top:auto!important;color:var(--danger,#ff5d73)!important;font-weight:800}
+@media(max-width:800px){.setm.full{grid-template-columns:1fr;grid-template-rows:auto 1fr}.setm.full .nav{flex-direction:row}.closefull{margin:0 0 0 auto!important}}
 .botmenu{flex:none;height:42px;padding:0 16px;border-radius:21px;border:1px solid var(--line,rgba(255,255,255,.12));background:var(--panel2);color:var(--text);font-weight:700;font-size:14px;cursor:pointer;transition:.2s}.botmenu:hover{background:var(--grad);color:#fff;border-color:transparent}
 .blk{margin:8px 12px 12px;padding:12px;border-radius:16px;background:var(--panel2);text-align:center;color:var(--muted)}
 
@@ -639,7 +675,7 @@ const chatOf = (id) => S.chats.find((c) => c.id === id);
 const isGroup = (c) => !!(c && c.isGroup);
 const othersOf = (c) => ((c && c.members) || []).filter((u) => u !== S.user.uid);
 const isSaved = (c) => !!c && !c.isGroup && (c.members || []).length === 2 && c.members[0] === c.members[1];
-const otherOf = (id) => { const c = chatOf(id); if (isGroup(c)) return null; return id.split('_').find((x) => x !== S.user.uid) || S.user.uid; };
+const otherOf = (id) => { const c = chatOf(id); if (isGroup(c)) return null; const me = S.user.uid; if (c && c.members && c.members.length === 2) return c.members.find((x) => x !== me) || me; if (id.startsWith(me + '_')) return id.slice(me.length + 1); if (id.endsWith('_' + me)) return id.slice(0, -(me.length + 1)); return me; };
 const isOnline = (p) => p && p.lastSeen && !p.hideSeen && Date.now() - p.lastSeen < 75000;
 const realName = (u) => (u === S.user.uid ? S.me.name : ((S.peers[u] || {}).name || '…'));
 const peerName = (u) => (u === S.user.uid ? S.me.name : (cfg.get('nick')[u] || realName(u)));
@@ -670,7 +706,7 @@ function updateBadge(n) {
 }
 function updateTitle() {
   const n = S.chats.reduce((a, c) => a + (muted(c.id) ? 0 : unreadOf(c)), 0);
-  document.title = (n ? `(${n}) ` : '') + 'MinoChat'; updateBadge(n);
+  document.title = (n ? `(${n}) ` : '') + 'MinoChat'; updateBadge(n); try { renderTabs(); } catch { /* ignore */ }
 }
 function startBlink(txt) {
   if (blink || !document.hidden) return; let on = false;
@@ -685,8 +721,9 @@ window.addEventListener('offline', renderOffline);
 
 /* ---------- запуск ---------- */
 function stopApp() {
-  [unsubChats, unsubMsgs, unsubPeer, unsubCalls].forEach((f) => { try { f && f(); } catch { /* ignore */ } });
-  unsubChats = unsubMsgs = unsubPeer = unsubCalls = null; clearInterval(presenceTimer); clearInterval(tickTimer);
+  try { stopSession(); stopStories(); } catch { /* ignore */ }
+  [unsubChats, unsubMsgs, unsubPeer, unsubCalls, unsubCallLog].forEach((f) => { try { f && f(); } catch { /* ignore */ } });
+  unsubChats = unsubMsgs = unsubPeer = unsubCalls = unsubCallLog = null; clearInterval(presenceTimer); clearInterval(tickTimer);
   try { if (typeof CALL !== 'undefined' && CALL) endCall(false); } catch { /* ignore */ }
   Object.assign(S, { chats: [], peers: {}, active: null, msgs: [], reply: null, edit: null, known: {}, loaded: false, q: '', results: null, packs: {}, drafts: {}, msearch: '', msearchOn: false, cmode: '', sel: null, divTs: 0, newBelow: 0 });
 }
@@ -696,7 +733,7 @@ function rememberAccount() {
   ls.set('sp_accts', JSON.stringify(a)); ls.set('sp_prev', '');
 }
 function startApp() {
-  ensureBot();
+  ensureBot(); S.tab = 'chats';
   rememberAccount();
   S.flt = cfg.get('filter') || 'all';
   root.replaceChildren(
@@ -704,15 +741,16 @@ function startApp() {
       h('aside', { class: 'side' },
         h('div', { class: 'me', id: 'meBar' }),
         (() => { const w = h('div', { class: 'search' }); w.innerHTML = ICON.search; w.append(h('input', { class: 'inp', id: 'q', placeholder: 'Найти человека по логину…', autocomplete: 'off', oninput: onSearch })); return w; })(),
-        h('div', { id: 'offBar' }), h('div', { id: 'notifBar' }), h('div', { class: 'chips', id: 'chips' }), h('div', { class: 'list', id: 'list' })),
+        h('div', { id: 'offBar' }), h('div', { id: 'notifBar' }), h('div', { class: 'stories', id: 'stories' }), h('div', { class: 'chips', id: 'chips' }), h('div', { class: 'list', id: 'list' }), h('nav', { class: 'navbar', id: 'tabs' })),
       h('main', { class: 'pane', id: 'pane' })));
-  renderMe(); renderPane(); renderChips(); renderList(); renderNotifBar(); renderOffline(); loadPacks();
+  renderMe(); renderPane(); renderChips(); renderList(); renderNotifBar(); renderOffline(); loadPacks(); startCallLog(); renderTabs(); startSession(); startStories(); renderStories();
   const qs = new URLSearchParams(location.search);
   const qc = qs.get('chat'); if (qc) S.pendingChat = qc;
+  const jn = qs.get('join'); if (jn && /^[a-z0-9]{6,16}$/i.test(jn)) setTimeout(() => joinByCode(jn), 1500);
   const qu = (qs.get('u') || '').toLowerCase(); if (/^[a-z0-9_]{3,24}$/.test(qu)) openByLogin(qu);
   const ping = () => { if (cfg.get('hideSeen')) return db.collection('users').doc(S.user.uid).update({ hideSeen: true }).catch(() => {}); return db.collection('users').doc(S.user.uid).update({ lastSeen: Date.now(), hideSeen: false }).catch(() => {}); };
   ping(); presenceTimer = setInterval(() => { if (!document.hidden) ping(); }, 30000);
-  tickTimer = setInterval(() => { renderHeader(); expireTick(); remindTick(); }, 15000);
+  tickTimer = setInterval(() => { renderHeader(); expireTick(); remindTick(); try { wxMorningTick(); } catch { /* ignore */ } }, 15000);
   unsubChats = db.collection('chats').where('members', 'array-contains', S.user.uid).onSnapshot((snap) => {
     const prev = S.known; const nextKnown = {};
     S.chats = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -750,7 +788,7 @@ function renderMe() {
   const bar = $('#meBar'); if (!bar) return;
   bar.replaceChildren(h('div', { style: 'cursor:pointer', onclick: () => openSettings('profile') }, avatar(S.me, '', false)),
     h('div', { class: 'nm' }, h('b', {}, S.me.name, vmark(S.me)), h('small', {}, S.me.status ? S.me.status : '@' + S.me.username)),
-    ibtn('users', 'Новая группа (Ctrl+N)', openNewGroup), ibtn('gear', 'Настройки (Ctrl+,)', () => openSettings()));
+    ibtn('users', 'Новая группа (Ctrl+N)', openNewGroup));
 }
 
 /* ---------- поиск людей ---------- */
@@ -760,6 +798,7 @@ async function findUsers(q) {
   return snap.docs.map((d) => d.data()).filter((p) => p.uid !== S.user.uid);
 }
 function onSearch(e) {
+  const jm = /[?&]join=([a-z0-9]{6,16})/i.exec(e.target.value); if (jm) { e.target.value = ''; S.q = ''; joinByCode(jm[1]); return; }
   S.q = e.target.value.trim().replace(/^@/, '').toLowerCase();
   clearTimeout(searchTimer);
   if (S.q.length < 2) { S.results = null; return renderList(); }
@@ -773,7 +812,16 @@ function onSearch(e) {
 const FILTERS = [['all', 'Все'], ['dm', 'Личные'], ['grp', 'Группы'], ['unr', 'Непрочитанные'], ['arch', 'Архив']];
 function renderChips() {
   const box = $('#chips'); if (!box) return;
-  box.replaceChildren(...FILTERS.map(([k, t]) => h('button', { class: 'chip2' + (S.flt === k ? ' on' : ''), onclick: () => { S.flt = k; cfg.set('filter', k); renderChips(); renderList(); } }, t)));
+  const pick = (k) => { S.flt = k; cfg.set('filter', k); renderChips(); renderList(); };
+  const chips = FILTERS.concat([['bot', 'Боты']]).map(([k, t]) => h('button', { class: 'chip2' + (S.flt === k ? ' on' : ''), onclick: () => pick(k) }, t));
+  folders().forEach((f) => {
+    const b = h('button', { class: 'chip2' + (S.flt === 'f:' + f.id ? ' on' : ''), title: 'Папка (правая кнопка или долгое нажатие — меню)', onclick: () => pick('f:' + f.id), oncontextmenu: (e) => { e.preventDefault(); folderMenu(e.clientX, e.clientY, f); } }, '📁 ' + f.name);
+    let lp = null; b.addEventListener('touchstart', (e) => { const t = e.touches[0]; lp = setTimeout(() => folderMenu(t.clientX, t.clientY, f), 600); }, { passive: true });
+    ['touchend', 'touchmove', 'touchcancel'].forEach((ev) => b.addEventListener(ev, () => clearTimeout(lp), { passive: true }));
+    chips.push(b);
+  });
+  chips.push(h('button', { class: 'chip2', title: 'Новая папка', onclick: () => { const f = newFolder(); if (f) pick('f:' + f.id); } }, '＋'));
+  box.replaceChildren(...chips);
 }
 function visibleChats() {
   const q = S.q, searching = q && q.length >= 2, arch = cfg.get('archived'), hid = cfg.get('hiddenChats'), um = cfg.get('unreadMark');
@@ -785,6 +833,8 @@ function visibleChats() {
     if (hid[c.id] && (c.lastTs || 0) <= hid[c.id]) return false;
     if (S.flt === 'dm') return !isGroup(c);
     if (S.flt === 'grp') return isGroup(c);
+    if (S.flt === 'bot') return !!botOf(c.id);
+    if (S.flt.startsWith('f:')) { const f = folderOf(S.flt.slice(2)); return !!f && f.chats.includes(c.id); }
     if (S.flt === 'unr') return unreadOf(c) > 0 || um.includes(c.id);
     return true;
   });
@@ -799,6 +849,7 @@ function previewText(c) {
 }
 function renderList() {
   const list = $('#list'); if (!list) return;
+  if (S.tab === 'calls') return renderCallList();
   const rows = [], q = S.q;
   if (S.results) {
     rows.push(h('div', { class: 'sect' }, 'Люди'));
@@ -808,6 +859,7 @@ function renderList() {
   if (!q || q.length < 2) {
     const sv = S.chats.find(isSaved);
     if (S.flt === 'all') rows.push(rowEl({ uid: 'saved', name: '★', color: '#2f6bff' }, sv && sv.lastMsg ? sv.lastMsg.text : 'Заметки, файлы и ссылки для себя', sv && sv.lastMsg ? fmtTime(sv.lastMsg.ts) : '', 0, false, openSaved, S.active && chatOf(S.active) && isSaved(chatOf(S.active)), 'Избранное'));
+    if (S.flt === 'all') rows.push(rowEl({ uid: 'bots', name: '🤖', color: '#7c5cff' }, 'Погода, курсы валют, переводчик, игры, заметки…', '', 0, false, openBotCatalog, false, 'Каталог ботов'));
   }
   if (S.results) rows.push(h('div', { class: 'sect' }, 'Ваши чаты'));
   const chats = visibleChats(), um = cfg.get('unreadMark');
@@ -843,6 +895,7 @@ function chatMenu(x, y, c) {
     muted(id) ? null : ['🔕 Без звука 8 часов', () => muteIt(28800000)],
     muted(id) ? null : ['🔕 Без звука навсегда', () => muteIt(9e12)],
     [un ? '✔ Отметить прочитанным' : '● Отметить непрочитанным', async () => { if (un) { listToggle('unreadMark', id, false); try { await db.collection('chats').doc(id).update({ ['unread.' + S.user.uid]: 0 }); } catch { /* ignore */ } } else listToggle('unreadMark', id, true); renderList(); }],
+    ['📁 В папку…', () => chatFolderMenu(x, y, id)],
     [arch ? '📤 Достать из архива' : '📥 В архив', () => { listToggle('archived', id, !arch); renderList(); }],
     (!isGroup(c) && !isSaved(c) && u) ? ['✏️ Своё имя контакта', () => renameContact(u)] : null,
     ['🧹 Скрыть чат из списка', () => { mapSet('hiddenChats', id, Date.now()); if (S.active === id) closeChat(); renderList(); toast('Чат скрыт, вернётся с новым сообщением'); }],
@@ -912,7 +965,7 @@ function subMsgs(id) {
     S.msgs = snap.docs.map((d) => ({ id: d.id, ...d.data(), _p: !!(d.metadata && d.metadata.hasPendingWrites) }));
     const box = $('#msgs'), far = box && box.scrollHeight - box.scrollTop - box.clientHeight > 300;
     const last = S.msgs[S.msgs.length - 1];
-    if (!snap.size && !snap.metadata.fromCache && isBotChat(id) && !botHello[id]) { botHello[id] = 1; botSay(id, BOT_HELLO); }
+    if (!snap.size && !snap.metadata.fromCache && isBotChat(id) && !botHello[id]) { botHello[id] = 1; botSay(id, BOT_TEXT[botOf(id)], botOf(id)); }
     if (far && last && last.id !== prevLast && last.from !== S.user.uid && prevN) { S.newBelow++; renderFab(); }
     if (last && last.id !== prevLast && last.from !== S.user.uid && prevN && /🎉/.test(last.text || '')) confetti();
     renderMsgs(); markRead();
@@ -984,7 +1037,7 @@ function renderComposer() {
   }
   const ta = h('textarea', { id: 'inp', rows: 1, placeholder: 'Сообщение…', oninput: onType, onpaste: onPaste, onkeydown: onInpKey });
   ta.value = S.drafts[S.active] || '';
-  box.replaceChildren(h('div', { id: 'ctx' }), h('div', { class: 'comp', id: 'comp' }, ibtn('smile', 'Эмодзи и стикеры', toggleEmoji), ibtn('clip', 'Прикрепить', (e) => { const r = e.currentTarget.getBoundingClientRect(); e.stopPropagation(); popMenu(r.left, r.top - 330, [['🖼 Фото', () => $('#file').click()], ['📎 Файл', () => $('#fileAny').click()], ['📊 Опрос', openPoll], ['📍 Геопозиция', sendGeo], ['👤 Моя визитка', sendCard], ['⚡ Быстрые ответы', quickReplies], ['🎙 Диктовать текст', dictate]]); }), isBotChat(S.active) ? h('button', { class: 'botmenu', title: 'Меню бота', onclick: openBotMenu }, '☰ Меню') : null, ta, ibtn('mic', 'Голосовое сообщение', startRec),
+  box.replaceChildren(h('div', { id: 'ctx' }), h('div', { class: 'comp', id: 'comp' }, ibtn('smile', 'Эмодзи и стикеры', toggleEmoji), ibtn('clip', 'Прикрепить', (e) => { const r = e.currentTarget.getBoundingClientRect(); e.stopPropagation(); popMenu(r.left, r.top - 330, [['🖼 Фото', () => $('#file').click()], ['📎 Файл', () => $('#fileAny').click()], ['📊 Опрос', openPoll], ['📍 Геопозиция', sendGeo], ['👤 Моя визитка', sendCard], ['⚡ Быстрые ответы', quickReplies], ['🎙 Диктовать текст', dictate]]); }), botMenuBtn(), ta, ibtn('mic', 'Голосовое сообщение', startRec),
     (() => { const b = h('button', { class: 'send', title: 'Отправить', onclick: submit }); b.innerHTML = ICON.send; return b; })(),
     h('div', { class: 'recbar' }, h('i', { class: 'recdot' }), h('span', { id: 'recT' }, '0:00'), h('span', { class: 'grow' }, 'Идёт запись…'), ibtn('x', 'Отмена', () => stopRec(false)),
       (() => { const b = h('button', { class: 'send', title: 'Отправить запись', onclick: () => stopRec(true) }); b.innerHTML = ICON.send; return b; })()),
@@ -1327,7 +1380,7 @@ function renderCtx() {
 /* ---------- отправка ---------- */
 const autosize = (t) => { t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight, 140) + 'px'; };
 function onType(e) {
-  autosize(e.target);
+  autosize(e.target); try { mentionSuggest(e.target); } catch { /* ignore */ }
   if (!S.active || Date.now() - typingSent < 2500 || !e.target.value) return;
   typingSent = Date.now();
   db.collection('chats').doc(S.active).update({ ['typing.' + S.user.uid]: Date.now() }).catch(() => {});
@@ -1364,12 +1417,12 @@ async function submit() {
     try { await msgRef(id).update({ text, edited: true }); } catch (e) { toast(errText(e)); }
     return;
   }
-  inp.value = ''; autosize(inp); S.drafts[S.active] = '';
+  inp.value = ''; autosize(inp); S.drafts[S.active] = ''; { const mp = $('#mnpop'); if (mp) mp.remove(); }
   if (text[0] === '/' && runCommand(text)) return;
   if (/🎉|с днём рождения/i.test(text)) confetti();
   const cid = S.active;
   await sendMsg(text, 'text');
-  if (isBotChat(cid)) botReact(cid, text);
+  if (isBotChat(cid)) botDispatch(cid, text);
 }
 async function sendMsg(text, type, extra, chatId) {
   const id = chatId || S.active; if (!id) return;
@@ -1449,7 +1502,7 @@ function openRemind(m) {
 function remindTick() {
   const now = Date.now(), r = cfg.get('reminders'), due = r.filter((x) => x.at <= now);
   if (!due.length) return; cfg.set('reminders', r.filter((x) => x.at > now));
-  due.forEach((x) => { toast('⏰ ' + x.text); showNote('Напоминание', x.text, 'rem' + x.id, x.chat); beep(); });
+  due.forEach((x) => { if (x.bot) { try { botSay(x.chat, '⏰ Напоминание: ' + x.text, 'remind_helper_bot', true); } catch { /* ignore */ } return; } toast('⏰ ' + x.text); showNote('Напоминание', x.text, 'rem' + x.id, x.chat); beep(); });
 }
 function expireTick() {
   if (!S.active) return; const now = Date.now(); let changed = false;
@@ -1776,6 +1829,7 @@ function openGroupInfo() {
       h('label', { class: 'f' }, 'Название'), nm, h('label', { class: 'f' }, 'Описание'), ds,
       admin ? h('button', { class: 'sm2', style: 'margin-top:8px', onclick: async () => { const n = nm.value.trim(); if (!n) return; try { const patch = { desc: ds.value.trim() }; if (n !== c.name) patch.name = n; await ref.update(patch); if (patch.name) sendSys(c.id, S.me.name + ' переименовал(а) группу в «' + n + '»'); toast('Сохранено'); } catch (e) { toast(errText(e)); } } }, 'Сохранить') : null,
       admin ? h('div', { class: 'rl' }, h('span', {}, 'Писать могут только админы'), h('input', { type: 'checkbox', checked: c.onlyAdmins ? '' : null, onchange: async (e) => { try { await ref.update({ onlyAdmins: e.target.checked }); } catch (er) { toast(errText(er)); } } })) : null,
+      admin ? inviteBlock(c) : null,
       h('div', { class: 'sect', style: 'margin-left:0' }, 'Участники'),
       h('div', { class: 'mscroll' }, ...(c.members || []).map((u) => h('div', { class: 'mrow' }, avatar(S.peers[u] || { uid: u, name: '?' }, 'sm', isOnline(S.peers[u])),
         h('div', { class: 'nm' }, h('b', {}, peerName(u) + (u === me ? ' (вы)' : '')), h('br'), h('small', {}, (c.admins || []).includes(u) ? 'админ' : ((S.peers[u] || {}).username ? '@' + S.peers[u].username : ''))),
@@ -1823,7 +1877,7 @@ function onCallDoc(d) {
   if (CALL && CALL.id === d.id) return handleCallDoc(d);
   if (d.status === 'ringing' && d.from !== me && Date.now() - d.ts < 60000) {
     if (iBlocked(d.from)) return;
-    if (CALL || INC) return void callRef(d.id).update({ status: 'busy' }).catch(() => {});
+    if (CALL || INC) { logCall({ peer: d.from, dir: 'in', kind: d.kind, res: 'missed', dur: 0 }); return void callRef(d.id).update({ status: 'busy' }).catch(() => {}); }
     showIncoming(d);
   }
 }
@@ -1837,12 +1891,12 @@ function showIncoming(d) {
   INC = d; startRing();
   const p = S.peers[d.from] || { uid: d.from, name: d.fromName || '…' }; if (!S.peers[d.from]) loadPeer(d.from);
   const el = h('div', { class: 'callbox', id: 'inc' }, h('div', { class: 'info' }, avatar(p, ''), h('b', {}, p.name === '…' ? (d.fromName || 'Звонок') : peerName(d.from)), h('small', {}, d.kind === 'video' ? 'Входящий видеозвонок…' : 'Входящий звонок…')),
-    h('div', { class: 'ctl' }, cbtn('phone', 'red', 'Отклонить', () => { const x = INC; closeIncoming(); callRef(x.id).update({ status: 'declined' }).catch(() => {}); }), cbtn(d.kind === 'video' ? 'video' : 'phone', 'grn ring', 'Принять', () => acceptCall(d))));
+    h('div', { class: 'ctl' }, cbtn('phone', 'red', 'Отклонить', () => { const x = INC; x.handled = true; logCall({ peer: x.from, dir: 'in', kind: x.kind, res: 'declined', dur: 0 }); closeIncoming(); callRef(x.id).update({ status: 'declined' }).catch(() => {}); }), cbtn(d.kind === 'video' ? 'video' : 'phone', 'grn ring', 'Принять', () => acceptCall(d))));
   document.body.append(el);
   incTO = setTimeout(closeIncoming, 45000);
   if (document.hidden) showNote(realName(d.from), d.kind === 'video' ? 'Входящий видеозвонок' : 'Входящий звонок', 'call', null);
 }
-function closeIncoming() { INC = null; stopRing(); clearTimeout(incTO); const e = $('#inc'); if (e) e.remove(); }
+function closeIncoming() { if (INC && !INC.handled) { INC.handled = true; logCall({ peer: INC.from, dir: 'in', kind: INC.kind, res: 'missed', dur: 0 }); } INC = null; stopRing(); clearTimeout(incTO); const e = $('#inc'); if (e) e.remove(); }
 function showCallUI(peerUid, kind) {
   const p = S.peers[peerUid] || { uid: peerUid, name: '…' };
   const mic = cbtn('mic', '', 'Микрофон', () => { const t = CALL.local.getAudioTracks()[0]; if (!t) return; t.enabled = !t.enabled; mic.classList.toggle('off', !t.enabled); mic.innerHTML = ICON[t.enabled ? 'mic' : 'micoff']; });
@@ -1934,7 +1988,7 @@ async function startCall(kind) {
   } catch (e) { toast(errText(e, 'звонок')); endCall(false); }
 }
 async function acceptCall(d) {
-  closeIncoming();
+  d.handled = true; closeIncoming();
   const stream = await getMedia(d.kind);
   if (!stream) return void callRef(d.id).update({ status: 'declined' }).catch(() => {});
   CALL = { id: d.id, role: 'callee', kind: d.kind, peer: d.from, local: stream, ready: true, pend: [], queue: [], answered: true };
@@ -1970,29 +2024,282 @@ function endCall(notify) {
     bump('calls');
     const txt = dur ? '📞 ' + vid + ' · ' + mmss(dur) : (C.why === 'declined' ? '📵 ' + vid + ' отклонён' : '📵 Пропущенный ' + vid.toLowerCase());
     if (C.chat && chatOf(C.chat)) sendMsg(txt, 'call', {}, C.chat);
+    logCall({ peer: C.peer, dir: 'out', kind: C.kind, res: dur ? 'ok' : (C.why === 'declined' ? 'declined' : 'missed'), dur });
     setTimeout(async () => { try { const cs = await callRef(C.id).collection('candidates').get(); const b = db.batch(); cs.forEach((x) => b.delete(x.ref)); await b.commit(); await callRef(C.id).delete(); } catch { /* ignore */ } }, 6000);
+  } else if (C.role === 'callee') {
+    const dur2 = C.t0 ? Math.round((Date.now() - C.t0) / 1000) : 0;
+    logCall({ peer: C.peer, dir: 'in', kind: C.kind, res: dur2 ? 'ok' : 'failed', dur: dur2 });
   }
 }
-/* ---------- бот @botmaker ---------- */
-const BOT = 'botmaker', botHello = {};
-const BOT_HELLO = 'Добро пожаловать в бота! 👋\nЕсли хотите создать какого-нибудь бота, скажите, какое у него будет имя, юзернейм и функции.\n\nИмя и юзернейм заполняются в отдельном меню — кнопка «Меню» рядом с кнопкой отправки сообщения. Заполните там всё и отправьте мне прямо из меню — я прочитаю и расскажу, что дальше.';
-const isBotChat = (id) => !!id && otherOf(id) === BOT;
-async function ensureBot() {
-  try {
-    const r = db.collection('users').doc(BOT), s = await r.get(); if (s.exists) return;
-    const b = db.batch();
-    b.set(db.collection('usernames').doc(BOT), { uid: BOT });
-    b.set(r, { uid: BOT, name: 'MinoChat BotMaker', username: 'botmaker', usernameLower: 'botmaker', photo: '', bio: 'Помогаю создавать ботов для MinoChat. Напишите мне!', status: 'бот', bot: true, color: '#2f6bff', createdAt: Date.now() });
-    await b.commit();
-  } catch { /* не критично */ }
+/* ---------- папки чатов ---------- */
+const folders = () => cfg.get('folders') || [];
+const setFolders = (f) => { cfg.set('folders', f); renderChips(); renderList(); };
+const folderOf = (id) => folders().find((f) => f.id === id);
+function folderMenu(x, y, f) {
+  popMenu(x, y, [
+    ['✏️ Переименовать', () => { const n = prompt('Название папки:', f.name); if (n && n.trim()) setFolders(folders().map((q) => (q.id === f.id ? { ...q, name: n.trim().slice(0, 20) } : q))); }],
+    ['🗑 Удалить папку (чаты останутся)', () => { if (S.flt === 'f:' + f.id) { S.flt = 'all'; cfg.set('filter', 'all'); } setFolders(folders().filter((q) => q.id !== f.id)); }, true],
+  ]);
 }
-async function botSay(chatId, text) {
+function newFolder(withChat) {
+  const n = prompt('Название папки (например: Работа):'); if (!n || !n.trim()) return null;
+  const f = { id: Math.random().toString(36).slice(2, 8), name: n.trim().slice(0, 20), chats: withChat ? [withChat] : [] };
+  setFolders(folders().concat([f])); return f;
+}
+function chatFolderMenu(x, y, id) {
+  const fs = folders();
+  popMenu(x, y, [...fs.map((f) => [(f.chats.includes(id) ? '✔ ' : '') + '📁 ' + f.name, () => setFolders(fs.map((q) => (q.id === f.id ? { ...q, chats: q.chats.includes(id) ? q.chats.filter((c) => c !== id) : q.chats.concat([id]) } : q)))]), ['＋ Новая папка…', () => newFolder(id)]]);
+}
+
+/* ---------- @упоминания в группах ---------- */
+function mentionSuggest(ta) {
+  const hide = () => { const p = $('#mnpop'); if (p) p.remove(); };
+  const c = chatOf(S.active); if (!c || !isGroup(c)) return hide();
+  const pos = ta.selectionStart, m = /(^|\s)@([A-Za-z0-9_]{0,24})$/.exec(ta.value.slice(0, pos)); if (!m) return hide();
+  const q = m[2].toLowerCase();
+  const list = (c.members || []).filter((u) => u !== S.user.uid).map((u) => S.peers[u]).filter((p) => p && p.username && (p.username.toLowerCase().startsWith(q) || (p.name || '').toLowerCase().startsWith(q))).slice(0, 6);
+  hide(); if (!list.length) return;
+  const box = h('div', { id: 'mnpop', class: 'mnpop' }, ...list.map((p) => h('button', { class: 'row', onmousedown: (e) => e.preventDefault(), onclick: () => {
+    const start = pos - m[2].length - 1; ta.value = ta.value.slice(0, start) + '@' + p.username + ' ' + ta.value.slice(pos);
+    const np = start + p.username.length + 2; ta.setSelectionRange(np, np); ta.focus(); hide(); autosize(ta);
+  } }, avatar(p, 'sm'), h('div', { class: 'mid' }, h('b', {}, p.name), h('div', { class: 'pv' }, '@' + p.username)))));
+  const cb = $('#cbox'); if (cb) cb.append(box);
+}
+
+/* ---------- ссылки-приглашения в группу ---------- */
+const INVITE_BASE = 'https://speeky-a0653.web.app/';
+async function inviteCreate(c) {
+  const al = 'abcdefghijkmnpqrstuvwxyz23456789', code = Array.from(crypto.getRandomValues(new Uint8Array(10))).map((x) => al[x % al.length]).join('');
+  await db.collection('invites').doc(code).set({ chat: c.id, name: c.name, by: S.user.uid, ts: Date.now() });
+  await db.collection('chats').doc(c.id).update({ inviteCode: code });
+}
+async function inviteRevoke(c) {
+  if (c.inviteCode) { try { await db.collection('invites').doc(c.inviteCode).delete(); } catch { /* ignore */ } }
+  await db.collection('chats').doc(c.id).update({ inviteCode: FV().delete() });
+}
+function inviteBlock(c) {
+  const url = c.inviteCode ? INVITE_BASE + '?join=' + c.inviteCode : '';
+  return h('div', {}, h('div', { class: 'sect', style: 'margin-left:0' }, 'Ссылка-приглашение'),
+    c.inviteCode ? h('div', {}, h('input', { class: 'inp', readonly: '', value: url, onclick: (e) => e.target.select() }),
+      h('div', { style: 'display:flex;gap:6px;margin-top:6px' }, h('button', { class: 'sm2', onclick: () => copyText(url) }, '📋 Копировать'),
+        h('button', { class: 'sm2 ban', onclick: async () => { if (!confirm('Отозвать ссылку? Она перестанет работать.')) return; try { await inviteRevoke(c); toast('Ссылка отозвана'); } catch (e) { toast(errText(e)); } } }, '🚫 Отозвать')))
+      : h('button', { class: 'sm2', onclick: async () => { try { await inviteCreate(c); toast('Ссылка создана'); } catch (e) { toast(errText(e)); } } }, '🔗 Создать ссылку'));
+}
+async function joinByCode(code) {
+  try {
+    const s = await db.collection('invites').doc(code).get(); if (!s.exists) return toast('Ссылка недействительна или отозвана');
+    const inv = s.data();
+    if (chatOf(inv.chat)) { openChat(inv.chat); return toast('Вы уже в этой группе'); }
+    if (!confirm('Вступить в группу «' + inv.name + '»?')) return;
+    S.pendingChat = inv.chat;
+    await db.collection('chats').doc(inv.chat).update({ members: FV().arrayUnion(S.user.uid), joinCode: code });
+    toast('Вы вступили в группу'); sendSys(inv.chat, S.me.name + ' вступил(а) по ссылке');
+  } catch (e) { S.pendingChat = null; toast(errText(e, 'вступление')); }
+}
+
+/* ---------- устройства и сеансы ---------- */
+let unsubSess = null, sessTimer = null, SID = null;
+function deviceName() {
+  const ua = navigator.userAgent, C = window.Capacitor;
+  if (C && C.isNativePlatform && C.isNativePlatform()) return 'MinoChat для Android';
+  if (/Electron/.test(ua)) return 'MinoChat для Windows';
+  const os = /Windows/.test(ua) ? 'Windows' : /Android/.test(ua) ? 'Android' : /iPhone|iPad/.test(ua) ? 'iPhone' : /Mac OS/.test(ua) ? 'Mac' : /Linux/.test(ua) ? 'Linux' : 'устройство';
+  const br = /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /Firefox\//.test(ua) ? 'Firefox' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : 'Браузер';
+  return br + ' · ' + os;
+}
+function forceLogout() { toast('Сеанс завершён с другого устройства'); try { localStorage.removeItem('mc_sid_' + S.user.uid); } catch { /* ignore */ } setTimeout(() => logout(), 600); }
+function stopSession() { try { unsubSess && unsubSess(); } catch { /* ignore */ } unsubSess = null; clearInterval(sessTimer); }
+function startSession() {
+  stopSession();
+  const key = 'mc_sid_' + S.user.uid; try { SID = localStorage.getItem(key); } catch { SID = null; }
+  if (!SID) { SID = Math.random().toString(36).slice(2) + Date.now().toString(36); try { localStorage.setItem(key, SID); } catch { /* ignore */ } }
+  const ref = db.collection('sessions').doc(SID);
+  ref.get().then((s) => {
+    if (s.exists && s.data().revoked) return forceLogout();
+    return ref.set({ owner: S.user.uid, name: deviceName(), createdAt: s.exists ? s.data().createdAt : Date.now(), lastSeen: Date.now(), revoked: false });
+  }).catch(() => {});
+  unsubSess = ref.onSnapshot((s) => { if (s.exists && s.data().revoked) forceLogout(); }, () => {});
+  sessTimer = setInterval(() => { if (!document.hidden) ref.update({ lastSeen: Date.now() }).catch(() => {}); }, 300000);
+}
+function devicesBlock() {
+  const box = h('div', {}, h('div', { class: 'empty' }, 'Загрузка…'));
+  const draw = async () => {
+    try {
+      const sn = await db.collection('sessions').where('owner', '==', S.user.uid).limit(30).get(), L = []; sn.forEach((d) => L.push({ id: d.id, ...d.data() }));
+      const alive = L.filter((x) => !x.revoked && Date.now() - x.lastSeen < 60 * 86400000).sort((a, b) => b.lastSeen - a.lastSeen);
+      box.replaceChildren(...alive.map((x) => h('div', { class: 'rl' }, h('span', {}, x.name + (x.id === SID ? ' (это устройство)' : ''), h('small', {}, 'Активность: ' + (fmtDay(x.lastSeen) === 'Сегодня' ? 'сегодня' : fmtDay(x.lastSeen)) + ' ' + fmtTime(x.lastSeen))),
+        x.id === SID ? null : h('button', { class: 'sm2', onclick: async () => { try { await db.collection('sessions').doc(x.id).update({ revoked: true }); toast('Сеанс завершён'); draw(); } catch (e) { toast(errText(e)); } } }, 'Завершить'))),
+        alive.length > 1 ? h('button', { class: 'btn ghost', style: 'color:var(--danger)', onclick: async () => {
+          if (!confirm('Завершить сеансы на всех остальных устройствах?')) return;
+          try { const b = db.batch(); alive.filter((x) => x.id !== SID).forEach((x) => b.update(db.collection('sessions').doc(x.id), { revoked: true })); await b.commit(); toast('Готово'); draw(); } catch (e) { toast(errText(e)); }
+        } }, 'Выйти на всех других устройствах') : null);
+    } catch (e) { box.replaceChildren(h('div', { class: 'empty' }, errText(e, 'устройства'))); }
+  };
+  draw(); return [h('div', { class: 'sect', style: 'margin-left:0' }, 'Устройства'), box];
+}
+
+/* ---------- истории на 24 часа ---------- */
+const ST_BG = ['linear-gradient(135deg,#2f6bff,#27c4ff)', 'linear-gradient(135deg,#7c5cff,#ec4899)', 'linear-gradient(135deg,#10b981,#06b6d4)', 'linear-gradient(135deg,#f59e0b,#ef4444)', 'linear-gradient(135deg,#0f172a,#334155)', 'linear-gradient(135deg,#ec4899,#f97316)', 'linear-gradient(135deg,#14b8a6,#84cc16)', 'linear-gradient(135deg,#6366f1,#0ea5e9)'];
+let unsubStories = null;
+function stopStories() { try { unsubStories && unsubStories(); } catch { /* ignore */ } unsubStories = null; }
+function startStories() {
+  stopStories(); S.stories = [];
+  unsubStories = db.collection('stories').where('exp', '>', Date.now()).limit(150).onSnapshot((snap) => {
+    S.stories = snap.docs.map((d) => ({ id: d.id, ...d.data() })).filter((s) => s.exp > Date.now()).sort((a, b) => a.ts - b.ts);
+    S.stories.forEach((s) => loadPeer(s.owner)); renderStories();
+  }, () => { /* нет прав или сети */ });
+  db.collection('stories').where('owner', '==', S.user.uid).limit(50).get().then((sn) => sn.forEach((d) => { if (d.data().exp < Date.now()) d.ref.delete().catch(() => {}); })).catch(() => {});
+}
+function storyGroups() {
+  const me = S.user.uid, known = new Set([me]); S.chats.forEach((c) => (c.members || []).forEach((u) => known.add(u)));
+  const g = {}; (S.stories || []).forEach((s) => { if (known.has(s.owner)) (g[s.owner] = g[s.owner] || []).push(s); }); return g;
+}
+function renderStories() {
+  const box = $('#stories'); if (!box || !S.user) return;
+  const me = S.user.uid, g = storyGroups(), seen = (s) => (s.views || []).includes(me) || s.owner === me, mine = g[me] || [];
+  const owners = Object.keys(g).filter((u) => u !== me).sort((a, b) => (g[a].every(seen) - g[b].every(seen)) || (g[b][g[b].length - 1].ts - g[a][g[a].length - 1].ts));
+  const item = (uid, label, ring, fn, plus) => {
+    const p = uid === me ? S.me : (S.peers[uid] || { uid, name: '…' });
+    const ringEl = h('div', { class: 'ring' + (ring ? ' on' : '') }, avatar(p, '')); if (plus) ringEl.append(h('i', { class: 'plus' }, '+'));
+    return h('button', { class: 'stb', onclick: fn }, ringEl, h('span', {}, label));
+  };
+  box.replaceChildren(item(me, 'Моя история', mine.length > 0, () => (mine.length ? openStory(me) : openStoryComposer()), !mine.length),
+    ...owners.map((u) => item(u, (peerName(u) || '').split(' ')[0].slice(0, 10), !g[u].every(seen), () => openStory(u))));
+}
+function openStoryComposer() {
+  let bg = 0;
+  const ta = h('textarea', { class: 'inp', rows: 3, maxlength: 200, placeholder: 'Что нового?' }), prev = h('div', { class: 'stprev', style: 'background:' + ST_BG[0] }, h('span', {}, 'Ваш текст'));
+  ta.oninput = () => { prev.firstChild.textContent = ta.value || 'Ваш текст'; };
+  const sw = h('div', { class: 'sw2' }, ST_BG.map((g, k) => h('button', { class: k === 0 ? 'on' : '', style: 'background:' + g, onclick: (e) => { bg = k; prev.style.background = g; sw.querySelectorAll('button').forEach((b) => b.classList.remove('on')); e.currentTarget.classList.add('on'); } })));
+  const mm = modal([h('h1', { class: 'brand', style: 'font-size:22px' }, 'Новая история'), prev, ta, sw, h('p', { class: 'tag' }, 'История видна вашим контактам 24 часа.'),
+    h('button', { class: 'btn', onclick: async () => {
+      const t = ta.value.trim(); if (!t) return toast('Напишите текст истории');
+      try { const ts = Date.now(); await db.collection('stories').add({ owner: S.user.uid, text: t, bg, ts, exp: ts + 86400000, views: [] }); mm.remove(); toast('История опубликована'); } catch (e) { toast(errText(e)); }
+    } }, 'Опубликовать')]);
+  ta.focus();
+}
+function openStory(owner) {
+  const me = S.user.uid; let list = (S.stories || []).filter((s) => s.owner === owner); if (!list.length) return;
+  let i = owner === me ? 0 : Math.max(0, list.findIndex((s) => !(s.views || []).includes(me))), timer = null;
+  const root = h('div', { class: 'stview' }); document.body.append(root);
+  const close = () => { clearTimeout(timer); root.remove(); document.removeEventListener('keydown', key); renderStories(); };
+  const key = (e) => { if (e.key === 'Escape') close(); else if (e.key === 'ArrowRight') go(1); else if (e.key === 'ArrowLeft') go(-1); };
+  document.addEventListener('keydown', key);
+  const go = (d) => { clearTimeout(timer); i += d; if (i < 0) i = 0; if (i >= list.length) return close(); draw(); };
+  const draw = () => {
+    const s = list[i], p = owner === me ? S.me : (S.peers[owner] || { uid: owner, name: '…' });
+    root.style.background = ST_BG[s.bg] || ST_BG[0];
+    const bars = h('div', { class: 'stbars' }, ...list.map((_, k) => h('i', { class: k < i ? 'done' : k === i ? 'cur' : '' }, h('b'))));
+    const head = h('div', { class: 'sthead' }, avatar(p, 'sm'), h('div', { class: 'nm' }, h('b', {}, owner === me ? 'Вы' : peerName(owner)), h('small', {}, fmtTime(s.ts))), h('button', { class: 'stx', title: 'Закрыть', onclick: close }, '✕'));
+    const foot = owner === me ? h('div', { class: 'stfoot' },
+      h('button', { class: 'sm2', onclick: () => { clearTimeout(timer); const names = (s.views || []).map((u) => peerName(u)); modal([h('h1', { class: 'brand', style: 'font-size:20px' }, '👁 Просмотры: ' + names.length), h('p', {}, names.length ? names.join(', ') : 'Пока никто не смотрел')]); } }, '👁 ' + (s.views || []).length),
+      h('button', { class: 'sm2', onclick: () => { close(); openStoryComposer(); } }, '➕ Ещё'),
+      h('button', { class: 'sm2 ban', onclick: async () => { if (!confirm('Удалить эту историю?')) return; try { await db.collection('stories').doc(s.id).delete(); S.stories = S.stories.filter((x) => x.id !== s.id); list = list.filter((x) => x.id !== s.id); if (!list.length) return close(); if (i >= list.length) i = list.length - 1; draw(); renderStories(); } catch (e) { toast(errText(e)); } } }, '🗑')) : null;
+    root.replaceChildren(bars, head, h('div', { class: 'sttext' }, s.text), h('button', { class: 'sttap l', onclick: () => go(-1) }), h('button', { class: 'sttap r', onclick: () => go(1) }), foot);
+    if (owner !== me && !(s.views || []).includes(me)) { s.views = (s.views || []).concat([me]); db.collection('stories').doc(s.id).update({ views: FV().arrayUnion(me) }).catch(() => {}); }
+    timer = setTimeout(() => go(1), 5000);
+  };
+  draw();
+}
+/* ---------- нижнее меню и история звонков ---------- */
+let unsubCallLog = null;
+const TAB_CHAT = '<svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1121 12z"/></svg>';
+function logCall(rec) { try { if (rec.peer && BOTS[rec.peer]) return; db.collection('callLog').add(Object.assign({ owner: S.user.uid, ts: Date.now() }, rec)).catch(() => {}); } catch { /* ignore */ } }
+function startCallLog() {
+  try { unsubCallLog && unsubCallLog(); } catch { /* ignore */ }
+  S.callLog = [];
+  unsubCallLog = db.collection('callLog').where('owner', '==', S.user.uid).limit(300).onSnapshot((snap) => {
+    S.callLog = snap.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => b.ts - a.ts);
+    S.callLog.forEach((r) => loadPeer(r.peer));
+    renderTabs(); if (S.tab === 'calls') renderList();
+  }, () => { /* нет прав или сети */ });
+}
+const missedCount = () => { const seen = cfg.get('callsSeen') || 0; return (S.callLog || []).filter((r) => r.dir === 'in' && r.res !== 'ok' && r.ts > seen).length; };
+function renderTabs() {
+  const t = $('#tabs'); if (!t) return;
+  const un = S.chats.reduce((a, c) => a + (muted(c.id) ? 0 : unreadOf(c)), 0), mc = missedCount();
+  const mk = (id, icon, label, badge, fn) => { const b = h('button', { class: 'nbtn' + (S.tab === id ? ' on' : ''), onclick: fn }); b.innerHTML = icon; b.append(h('span', {}, label)); if (badge) b.append(h('i', { class: 'nbb' }, badge > 99 ? '99+' : badge)); return b; };
+  t.replaceChildren(mk('chats', TAB_CHAT, 'Чаты', un, () => setTab('chats')), mk('calls', ICON.phone, 'Звонки', mc, () => setTab('calls')), mk('set', ICON.gear, 'Настройки', 0, () => openSettings(undefined, true)));
+}
+function setTab(t) {
+  S.tab = t; const app = $('#app'); if (app) app.dataset.tab = t;
+  if (t === 'calls') cfg.set('callsSeen', Date.now());
+  renderTabs(); renderList();
+  if (t === 'calls') setTimeout(renderTabs, 50);
+}
+async function callBack(uid, kind) {
+  const p = S.peers[uid]; if (!p || p.name === '…') return;
+  const id = chatIdOf(S.user.uid, uid);
+  if (chatOf(id)) openChat(id); else await openWith(p);
+  startCall(kind);
+}
+async function clearCallLog() {
+  if (!confirm('Очистить историю звонков?')) return;
+  try { const sn = await db.collection('callLog').where('owner', '==', S.user.uid).limit(300).get(); const b = db.batch(); sn.forEach((d) => b.delete(d.ref)); await b.commit(); toast('История очищена'); } catch (e) { toast(errText(e)); }
+}
+function renderCallList() {
+  const list = $('#list'); if (!list) return;
+  const L = S.callLog || [], rows = [];
+  rows.push(h('div', { class: 'sect callhead' }, h('span', {}, 'История звонков'), L.length ? h('button', { class: 'link', style: 'margin:0;font-size:12px', onclick: clearCallLog }, 'Очистить') : null));
+  if (!L.length) rows.push(h('div', { class: 'empty' }, 'Звонков пока не было.', h('br'), 'Позвонить можно из любого личного чата.'));
+  L.forEach((r) => {
+    const p = S.peers[r.peer] || { uid: r.peer, name: '…' }, miss = r.dir === 'in' && r.res !== 'ok';
+    const dirTxt = r.dir === 'out' ? '↗ Исходящий' : miss ? '↙ Пропущенный' : '↙ Входящий';
+    const sub = dirTxt + ' · ' + (r.kind === 'video' ? 'видео' : 'аудио') + (r.res === 'ok' && r.dur ? ' · ' + mmss(r.dur) : r.res === 'declined' ? ' · отклонён' : (r.dir === 'out' && r.res !== 'ok') ? ' · без ответа' : '');
+    const when = (fmtDay(r.ts) === 'Сегодня' ? '' : fmtDay(r.ts) + ' ') + fmtTime(r.ts);
+    const go = () => { const id = chatIdOf(S.user.uid, r.peer); if (chatOf(id)) openChat(id); else if (p.name !== '…') openWith(p); };
+    const cb = (icon, kind, title) => { const b = h('button', { class: 'cb2', title, onclick: (e) => { e.stopPropagation(); callBack(r.peer, kind); } }); b.innerHTML = icon; return b; };
+    rows.push(h('div', { class: 'row callrow', onclick: go },
+      avatar(p, ''), h('div', { class: 'mid' }, h('div', { class: 't1' }, h('b', { class: miss ? 'miss' : '' }, peerName(r.peer), vmark(p)), h('span', { class: 'tm' }, when)), h('div', { class: 't2' }, h('span', { class: 'pv' + (miss ? ' miss' : '') }, sub))),
+      cb(ICON.phone, 'audio', 'Позвонить'), cb(ICON.video, 'video', 'Видеозвонок')));
+  });
+  list.replaceChildren(...rows);
+}
+
+/* ---------- бот @botmaker ---------- */
+const BOT = 'botmaker', WBOT = 'weather_helper_bot', botHello = {};
+const CBOT = 'currency_helper_bot', TBOT = 'translate_helper_bot', RBOT = 'remind_helper_bot', GBOT = 'games_helper_bot', NBOT = 'notes_helper_bot';
+const BOTS = {
+  botmaker: { name: 'MinoChat BotMaker', bio: 'Помогаю создавать ботов для MinoChat. Напишите мне!', color: '#2f6bff' },
+  weather_helper_bot: { name: 'Погодный помощник', bio: 'Погода в любом городе: сейчас, на неделю, осадки', color: '#06b6d4' },
+  currency_helper_bot: { name: 'Курсы валют', bio: 'Курсы ЦБ РФ, криптовалюты и конвертер', color: '#10b981' },
+  translate_helper_bot: { name: 'Переводчик', bio: 'Переводит текст на 15 языков', color: '#7c5cff' },
+  remind_helper_bot: { name: 'Напоминалка', bio: 'Напомню о чём угодно: «через час позвонить»', color: '#f59e0b' },
+  games_helper_bot: { name: 'Игры', bio: 'Кубик, монетка, угадай число, викторина, камень-ножницы-бумага', color: '#ec4899' },
+  notes_helper_bot: { name: 'Заметки', bio: 'Быстрые заметки и списки дел, синхронизируются между устройствами', color: '#eab308' },
+};
+const botOf = (id) => { const o = id ? otherOf(id) : null; return o && BOTS[o] ? o : null; };
+const BOT_HELLO = 'Добро пожаловать в бота! 👋\nЕсли хотите создать какого-нибудь бота, скажите, какое у него будет имя, юзернейм и функции.\n\nИмя и юзернейм заполняются в отдельном меню — кнопка «Меню» рядом с кнопкой отправки сообщения. Заполните там всё и отправьте мне прямо из меню — я прочитаю и расскажу, что дальше.';
+const isBotChat = (id) => !!botOf(id);
+const BOT_TEXT = {
+  botmaker: BOT_HELLO,
+  currency_helper_bot: 'Привет! Я бот «Курсы валют» 💱\n\nНажмите «💱 Курсы»: покажу курсы ЦБ РФ, криптовалюты и конвертер.\n\nМожно писать и так: «курс», «крипта», «100 usd в rub», «5000 рублей в евро».',
+  translate_helper_bot: 'Привет! Я Переводчик 🌐\n\nСейчас перевожу на: английский. Просто напишите любой текст — я переведу.\n\nЯзык меняется кнопкой «🌐 Язык» или командой, например: «язык немецкий».',
+  remind_helper_bot: 'Привет! Я Напоминалка ⏰\n\nПишите по-русски, например:\n• напомни через 10 минут выключить чайник\n• напомни завтра в 9:00 позвонить маме\n• в 18:30 тренировка\n\nКоманды: «мои напоминания», «отмена 1». Или нажмите «⏰ Напомнить».\n\nНапоминания приходят, пока MinoChat запущен на устройстве (на телефоне — благодаря фоновой службе).',
+  games_helper_bot: 'Привет! Я бот «Игры» 🎮\n\nНажмите «🎮 Играть» или напишите: «кубик», «монетка», «угадай число», «викторина», «камень», «ножницы», «бумага».',
+  notes_helper_bot: 'Привет! Я бот «Заметки» 📝\n\nЛюбой ваш текст я сохраню как заметку. Команды: «заметки» — список, «готово 2» — отметить, «удалить 2» — удалить. Или нажмите «📝 Заметки».\n\nЗаметки хранятся в облаке и доступны на всех ваших устройствах.',
+  weather_helper_bot: 'Привет! Я Погодный помощник 🌦\n\nНажмите «🌦 Погода» рядом с кнопкой отправки и найдите город — я покажу, сколько градусов сейчас, погоду на неделю и какие будут осадки.\n\nМожно и проще: просто напишите название города, например «Вологда».',
+};
+async function ensureBot() {
+  for (const id of Object.keys(BOTS)) {
+    try {
+      const r = db.collection('users').doc(id), s = await r.get(); if (s.exists) continue;
+      const b = db.batch();
+      b.set(db.collection('usernames').doc(id), { uid: id });
+      b.set(r, { uid: id, name: BOTS[id].name, username: id, usernameLower: id, photo: '', bio: BOTS[id].bio, status: 'бот', bot: true, color: BOTS[id].color, createdAt: Date.now() });
+      await b.commit();
+    } catch { /* не критично */ }
+  }
+}
+async function botSay(chatId, text, uid, bumpUnread) {
+  uid = uid || BOT;
   await new Promise((r) => setTimeout(r, 700));
   const ts = Date.now();
   try {
     const ref = db.collection('chats').doc(chatId), b = db.batch();
-    b.set(ref.collection('messages').doc(), { from: BOT, text, type: 'text', ts, replyTo: null, edited: false, reactions: {}, deleted: false });
-    b.update(ref, { lastMsg: { text: text.slice(0, 200), from: BOT, ts }, lastTs: ts });
+    b.set(ref.collection('messages').doc(), { from: uid, text, type: 'text', ts, replyTo: null, edited: false, reactions: {}, deleted: false });
+    const upd = { lastMsg: { text: text.slice(0, 200), from: uid, ts }, lastTs: ts }; if (bumpUnread || S.active !== chatId) upd['unread.' + S.user.uid] = FV().increment(1);
+    b.update(ref, upd);
     await b.commit();
   } catch (e) { toast(errText(e, 'бот')); }
 }
@@ -2017,6 +2324,415 @@ async function botReact(chatId, text, form) {
   } catch (e) { return botSay(chatId, 'Не получилось сохранить заявку (' + errText(e) + '). Отправьте описание функций ещё раз.'); }
   botSay(chatId, 'Принято! ✅ Заявка на бота «' + w.name + '» (@' + w.username + ') записана вместе с вашими функциями. Я выработаю все функции и добавлю их в бота сам.');
 }
+
+/* ---------- Погодный помощник ---------- */
+const WX = { 0: ['Ясно', '☀️'], 1: ['Преимущественно ясно', '🌤'], 2: ['Переменная облачность', '⛅'], 3: ['Пасмурно', '☁️'], 45: ['Туман', '🌫'], 48: ['Изморозь', '🌫'],
+  51: ['Лёгкая морось', '🌦'], 53: ['Морось', '🌦'], 55: ['Сильная морось', '🌧'], 56: ['Ледяная морось', '🌧'], 57: ['Ледяная морось', '🌧'],
+  61: ['Небольшой дождь', '🌦'], 63: ['Дождь', '🌧'], 65: ['Сильный дождь', '🌧'], 66: ['Ледяной дождь', '🌧'], 67: ['Ледяной дождь', '🌧'],
+  71: ['Небольшой снег', '🌨'], 73: ['Снег', '🌨'], 75: ['Сильный снегопад', '❄️'], 77: ['Снежная крупа', '🌨'],
+  80: ['Ливень', '🌦'], 81: ['Ливень', '🌧'], 82: ['Сильный ливень', '⛈'], 85: ['Снегопад', '🌨'], 86: ['Сильный снегопад', '❄️'],
+  95: ['Гроза', '⛈'], 96: ['Гроза с градом', '⛈'], 99: ['Гроза с сильным градом', '⛈'] };
+const wxInfo = (c) => WX[c] || ['—', '🌡'];
+const wxT = (t) => { const r = Math.round(t); return r > 0 ? '+' + r + '°' : r < 0 ? '−' + (-r) + '°' : '0°'; };
+const wxMm = (x) => (Math.round(x * 10) / 10).toString().replace('.', ',');
+const wxIsSnow = (c) => (c >= 71 && c <= 77) || c === 85 || c === 86;
+const wxIsRain = (c) => (c >= 51 && c <= 67) || (c >= 80 && c <= 82) || c >= 95;
+async function wxFind(q) {
+  const r = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=8&language=ru&format=json&name=' + encodeURIComponent(q));
+  if (!r.ok) throw new Error('geo ' + r.status);
+  const j = await r.json(); return j.results || [];
+}
+const wxLabel = (p) => [p.name, p.admin1 && p.admin1 !== p.name ? p.admin1 : '', p.country || ''].filter(Boolean).join(', ');
+const wxPlace = (p) => ({ name: p.name, admin1: p.admin1 || '', country: p.country || '', latitude: p.latitude, longitude: p.longitude });
+async function wxFetch(p) {
+  const u = 'https://api.open-meteo.com/v1/forecast?latitude=' + p.latitude + '&longitude=' + p.longitude
+    + '&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,pressure_msl'
+    + '&hourly=temperature_2m,precipitation,precipitation_probability,weather_code'
+    + '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,snowfall_sum,sunrise,sunset,uv_index_max,wind_gusts_10m_max'
+    + '&timezone=auto&wind_speed_unit=ms&forecast_days=7';
+  const r = await fetch(u); if (!r.ok) throw new Error('wx ' + r.status);
+  return r.json();
+}
+const wxDayName = (t, i) => { const n = new Date(t + 'T12:00').toLocaleDateString('ru-RU', { weekday: 'short' }); return i === 0 ? 'Сегодня' : n.charAt(0).toUpperCase() + n.slice(1); };
+const wxHM = (iso) => (iso || '').slice(11, 16);
+function wxAlerts(j) {
+  const d = j.daily, out = [];
+  d.time.forEach((t, i) => {
+    const nm = i === 0 ? 'сегодня' : wxDayName(t, i) + ' ' + t.slice(8, 10) + '.' + t.slice(5, 7), w = d.wind_gusts_10m_max ? d.wind_gusts_10m_max[i] : 0, sum = d.precipitation_sum[i] || 0, sn = d.snowfall_sum ? d.snowfall_sum[i] || 0 : 0;
+    if (w >= 20) out.push('🌪 ' + nm + ': шторм, порывы до ' + Math.round(w) + ' м/с'); else if (w >= 15) out.push('💨 ' + nm + ': сильный ветер, порывы до ' + Math.round(w) + ' м/с');
+    if (d.weather_code[i] >= 95) out.push('⛈ ' + nm + ': гроза');
+    if (sum >= 20) out.push('🌧 ' + nm + ': очень сильные осадки, ' + wxMm(sum) + ' мм'); else if (sum >= 10) out.push('🌧 ' + nm + ': сильные осадки, ' + wxMm(sum) + ' мм');
+    if (sn >= 10) out.push('❄️ ' + nm + ': сильный снегопад, ' + wxMm(sn) + ' см');
+    if (d.temperature_2m_min[i] <= -20) out.push('🥶 ' + nm + ': сильный мороз, до ' + wxT(d.temperature_2m_min[i]) + 'C');
+    if (d.temperature_2m_max[i] >= 30) out.push('🔥 ' + nm + ': жара, до ' + wxT(d.temperature_2m_max[i]) + 'C');
+  });
+  return out;
+}
+function wxAdvice(j) {
+  const a = [], f = j.current.apparent_temperature, d = j.daily, snow = (d.snowfall_sum && d.snowfall_sum[0] > 0.1);
+  a.push(f <= -15 ? '🥶 Очень холодно: тёплая куртка, шапка, шарф и перчатки' : f <= 0 ? '🧥 Холодно: тёплая куртка и шапка' : f <= 10 ? '🧥 Прохладно: куртка' : f <= 20 ? '👕 Комфортно: лёгкая куртка или кофта' : '😎 Тепло: лёгкая одежда');
+  if (snow) a.push('❄️ Сегодня ожидается снег'); else if ((d.precipitation_probability_max[0] || 0) >= 40 || (d.precipitation_sum[0] || 0) >= 1) a.push('☔ Возьмите зонт');
+  if (j.current.wind_speed_10m >= 10) a.push('💨 Ветрено, держитесь крепче');
+  if ((d.uv_index_max || [])[0] >= 6) a.push('🧴 Высокий УФ: нужен солнцезащитный крем');
+  return a;
+}
+const wxHead = (p, j) => { const c = j.current, [cd, ci] = wxInfo(c.weather_code); return ['🌦 ' + wxLabel(p), '', 'Сейчас: ' + wxT(c.temperature_2m) + 'C (ощущается ' + wxT(c.apparent_temperature) + 'C)', ci + ' ' + cd, '💧 Влажность ' + Math.round(c.relative_humidity_2m) + '% · 💨 ветер ' + Math.round(c.wind_speed_10m) + ' м/с']; };
+function wxBuild(kind, p, j) {
+  const c = j.current, d = j.daily, L = wxHead(p, j);
+  if (kind === 'hours') {
+    const hh = j.hourly, t0 = c.time.slice(0, 13) + ':00'; let st = hh.time.findIndex((t) => t >= t0); if (st < 0) st = 0;
+    L.push('', '🕒 Ближайшие сутки (каждые 3 часа):');
+    for (let k = 0; k < 24; k += 3) {
+      const i = st + k; if (i >= hh.time.length) break;
+      let mm = 0, pr = 0; for (let q = 0; q < 3 && i + q < hh.time.length; q++) { mm += hh.precipitation[i + q] || 0; pr = Math.max(pr, hh.precipitation_probability ? hh.precipitation_probability[i + q] || 0 : 0); }
+      const day = hh.time[i].slice(8, 10) !== t0.slice(8, 10) ? ' (' + hh.time[i].slice(8, 10) + '.' + hh.time[i].slice(5, 7) + ')' : '';
+      L.push(wxHM(hh.time[i]) + day + '  ' + wxInfo(hh.weather_code[i])[1] + ' ' + wxT(hh.temperature_2m[i]) + ' · ' + (mm > 0.1 ? (wxIsSnow(hh.weather_code[i]) ? '❄️ ' : '🌧 ') + wxMm(mm) + ' мм (' + pr + '%)' : 'без осадков'));
+    }
+    let first = -1; for (let k = 0; k < 24 && st + k < hh.time.length; k++) if ((hh.precipitation[st + k] || 0) > 0.1) { first = st + k; break; }
+    L.push('', first < 0 ? '☀️ В ближайшие сутки осадков не ожидается.' : '☔ Ближайшие осадки: ' + (hh.time[first].slice(8, 10) !== t0.slice(8, 10) ? 'завтра в ' : 'сегодня в ') + wxHM(hh.time[first]) + '.');
+    return L.join('\n');
+  }
+  if (kind === 'sun') {
+    L.push('', '🌅 Восход: ' + wxHM(d.sunrise[0]) + ' · 🌇 Закат: ' + wxHM(d.sunset[0]));
+    const len = (new Date(d.sunset[0]) - new Date(d.sunrise[0])) / 60000; if (len > 0) L.push('🕐 Световой день: ' + Math.floor(len / 60) + ' ч ' + Math.round(len % 60) + ' мин');
+    const uv = (d.uv_index_max || [])[0]; if (uv != null) L.push('☀️ УФ-индекс сегодня: ' + Math.round(uv * 10) / 10 + ' (' + (uv < 3 ? 'низкий' : uv < 6 ? 'умеренный' : uv < 8 ? 'высокий' : uv < 11 ? 'очень высокий' : 'экстремальный') + ')');
+    if (c.pressure_msl) L.push('🎚 Давление: ' + Math.round(c.pressure_msl * 0.75006) + ' мм рт. ст.');
+    L.push('', ...wxAdvice(j));
+    return L.join('\n');
+  }
+  if (kind === 'precip') {
+    L.push(c.precipitation > 0 ? '☔ Осадки сейчас: ' + (wxIsSnow(c.weather_code) ? 'снег' : 'дождь') + ', ' + wxMm(c.precipitation) + ' мм' : '☔ Осадки сейчас: нет', '', '🌧 Осадки по дням:');
+    const mx = Math.max(1, ...d.precipitation_sum.map((x) => x || 0)); let total = 0;
+    d.time.forEach((t, i) => {
+      const sum = d.precipitation_sum[i] || 0, snow = (d.snowfall_sum && d.snowfall_sum[i] > 0.1), pr = d.precipitation_probability_max[i]; total += sum;
+      L.push(wxDayName(t, i) + ' ' + t.slice(8, 10) + '.' + t.slice(5, 7) + '  ' + (sum > 0.1 ? '▇'.repeat(Math.max(1, Math.round(sum / mx * 8))) + ' ' + wxMm(sum) + ' мм' + (snow ? ' ❄️' : ' 🌧') + (pr != null ? ' (' + pr + '%)' : '') : '— без осадков'));
+    });
+    L.push('', total > 0.1 ? '☔ Всего за неделю: ' + wxMm(total) + ' мм.' : '☀️ На неделю осадков не ожидается.');
+    return L.join('\n');
+  }
+  // неделя
+  L.push(c.precipitation > 0 ? '☔ Осадки сейчас: ' + (wxIsSnow(c.weather_code) ? 'снег' : 'дождь') + ', ' + wxMm(c.precipitation) + ' мм' : '☔ Осадки сейчас: нет', '', '📅 На неделю:');
+  let total = 0, rainDays = 0, snowDays = 0, wet = null;
+  d.time.forEach((t, i) => {
+    const nm = wxDayName(t, i), ds = t.slice(8, 10) + '.' + t.slice(5, 7), sum = d.precipitation_sum[i] || 0, pr = d.precipitation_probability_max[i], snow = (d.snowfall_sum && d.snowfall_sum[i] > 0.1) || wxIsSnow(d.weather_code[i]);
+    total += sum; if (sum > 0.1) { if (snow) snowDays++; else rainDays++; if (!wet || sum > wet.sum) wet = { sum, name: nm, ds }; }
+    const pc = sum > 0.1 ? (snow ? '❄️ снег ' : '🌧 дождь ') + wxMm(sum) + ' мм' + (pr != null ? ' (' + pr + '%)' : '') : 'без осадков';
+    L.push(nm + ' ' + ds + '  ' + wxInfo(d.weather_code[i])[1] + ' ' + wxT(d.temperature_2m_min[i]) + '…' + wxT(d.temperature_2m_max[i]) + ' · ' + pc);
+  });
+  L.push('', total > 0.1 ? '☔ За неделю осадков: ' + wxMm(total) + ' мм (дождь — ' + rainDays + ' дн., снег — ' + snowDays + ' дн.). Самый влажный день: ' + wet.name + ' ' + wet.ds + ', ' + wxMm(wet.sum) + ' мм.' : '☀️ На неделю осадков не ожидается.');
+  const al = wxAlerts(j); if (al.length) L.push('', '⚠️ Предупреждения:', ...al);
+  return L.join('\n');
+}
+async function wxAnswer(chatId, p, kind) {
+  try { await botSay(chatId, wxBuild(kind || 'week', p, await wxFetch(p)), WBOT); } catch { botSay(chatId, 'Не получилось получить погоду: нет связи с сервисом погоды. Попробуйте ещё раз чуть позже.', WBOT); }
+}
+const wxHome = () => cfg.get('wxCity') || null;
+const wxMorning = () => cfg.get('wxMorning') || { on: false, hour: 8 };
+function wxMorningTick() {
+  const m = wxMorning(), home = wxHome(); if (!m.on || !home) return;
+  const now = new Date(), day = now.toISOString().slice(0, 10) + now.getDate();
+  if (now.getHours() < m.hour || m.last === day) return;
+  const id = chatIdOf(S.user.uid, WBOT); if (!chatOf(id)) return;
+  cfg.set('wxMorning', Object.assign({}, m, { last: day }));
+  (async () => {
+    try { const j = await wxFetch(home), al = wxAlerts(j); await botSay(id, '☀️ Доброе утро! Погода на сегодня\n\n' + wxBuild('week', home, j).split('\n').slice(0, 5).join('\n') + '\n\n' + wxAdvice(j).join('\n') + (al.length ? '\n\n⚠️ ' + al.slice(0, 3).join('\n') : ''), WBOT, true); } catch { /* повторим завтра */ }
+  })();
+}
+const WX_KINDS = [['week', '📅 Сейчас и неделя'], ['hours', '🕒 По часам'], ['precip', '☔ Осадки'], ['sun', '🌅 Солнце, УФ, совет']];
+async function weatherReact(chatId, text) {
+  let q = text.replace(/^\/start/i, '').trim(), kind = 'week';
+  const toks = q.replace(/(^|\s)(по часам|мой город|на неделю)(?=\s|$)/gi, ' $2 ').toLowerCase().split(/\s+/);
+  const has = (arr) => toks.some((w) => arr.includes(w));
+  if (/(^|\s)по часам(?=\s|$)/i.test(q) || has(['почасовая', 'почасовой', 'завтра'])) kind = 'hours'; else if (has(['осадки', 'осадков', 'дождь', 'снег', 'зонт'])) kind = 'precip'; else if (has(['солнце', 'закат', 'восход', 'уф', 'давление', 'совет', 'одеть', 'надеть'])) kind = 'sun';
+  const stop = ['почасовая', 'почасовой', 'осадки', 'осадков', 'дождь', 'снег', 'зонт', 'солнце', 'закат', 'восход', 'уф', 'давление', 'совет', 'одеть', 'надеть', 'завтра', 'сегодня', 'погода', 'погоду', 'погоде', 'в', 'домой', 'неделю', 'сейчас', 'часам'];
+  q = q.replace(/(^|\s)(по часам|мой город|на неделю)(?=\s|$)/gi, ' ').split(/\s+/).filter((w) => w && !stop.includes(w.toLowerCase())).join(' ').trim();
+  if (/^(привет|здравствуй|hi|hello|помощь|help|\/help|\/start)$/i.test(text.trim())) return botSay(chatId, BOT_TEXT[WBOT], WBOT);
+  if (!q) { const home = wxHome(); if (home) return wxAnswer(chatId, home, kind); return botSay(chatId, 'Назовите город, например «Вологда», или нажмите «🌦 Погода», найдите его и сделайте «⭐ Моим городом».', WBOT); }
+  try {
+    const res = await wxFind(q);
+    if (!res.length) return botSay(chatId, 'Не нашёл город «' + q + '». Проверьте название или нажмите «🌦 Погода» и найдите его в списке.', WBOT);
+    await wxAnswer(chatId, res[0], kind);
+  } catch { botSay(chatId, 'Не получилось найти город: нет связи с сервисом погоды. Попробуйте позже.', WBOT); }
+}
+function openWxPlace(p, mm0, chatId) {
+  if (mm0) mm0.remove();
+  const home = wxHome(), isHome = home && home.latitude === p.latitude && home.longitude === p.longitude, mo = wxMorning();
+  const hr = h('select', { onchange: (e) => { cfg.set('wxMorning', Object.assign({}, wxMorning(), { hour: +e.target.value })); } }, [6, 7, 8, 9, 10].map((x) => h('option', { value: x, selected: x === (mo.hour || 8) ? '' : null }, x + ':00')));
+  const mm = modal([h('h1', { class: 'brand', style: 'font-size:20px' }, '🌦 ' + p.name), h('p', { class: 'tag' }, wxLabel(p)),
+    ...WX_KINDS.map(([k, t]) => h('button', { class: 'btn', style: 'margin:6px 0', onclick: async () => { mm.remove(); await sendMsg('🌦 ' + t.replace(/^\S+\s/, '') + ': ' + wxLabel(p), 'text', null, chatId); wxAnswer(chatId, wxPlace(p), k); } }, t)),
+    h('button', { class: 'btn', style: 'margin:6px 0;background:var(--panel2);color:var(--text)', onclick: () => { cfg.set('wxCity', wxPlace(p)); toast('Мой город: ' + p.name); mm.remove(); openWxPlace(p, null, chatId); } }, isHome ? '⭐ Это ваш город' : '⭐ Сделать моим городом'),
+    isHome ? h('div', { class: 'rl', style: 'margin-top:8px' }, h('span', {}, '🔔 Утренняя сводка', h('small', {}, 'Каждое утро бот сам напишет погоду (пока MinoChat запущен)')), h('input', { type: 'checkbox', checked: mo.on ? '' : null, onchange: (e) => { cfg.set('wxMorning', Object.assign({ hour: 8 }, wxMorning(), { on: e.target.checked })); toast(e.target.checked ? 'Утренняя сводка включена' : 'Утренняя сводка выключена'); } })) : null,
+    isHome ? h('div', { class: 'rl' }, h('span', {}, 'Время сводки'), hr) : null]);
+}
+function openWeather() {
+  const chatId = S.active, home = wxHome();
+  const q = h('input', { class: 'inp', placeholder: 'Город, например: Вологда', maxlength: 60, autocomplete: 'off' }), list = h('div', { class: 'mscroll', style: 'max-height:40vh;margin-top:8px' }, h('div', { class: 'empty' }, 'Начните вводить название города'));
+  const quick = [];
+  if (home) quick.push(h('button', { class: 'btn', style: 'margin:6px 0', onclick: () => openWxPlace(home, mm, chatId) }, '⭐ Мой город: ' + home.name));
+  quick.push(h('button', { class: 'btn', style: 'margin:6px 0;background:var(--panel2);color:var(--text)', onclick: () => {
+    if (!navigator.geolocation) return toast('Геолокация не поддерживается');
+    toast('Определяю местоположение…');
+    navigator.geolocation.getCurrentPosition((g) => openWxPlace({ name: 'Моё местоположение', admin1: '', country: '', latitude: Math.round(g.coords.latitude * 1000) / 1000, longitude: Math.round(g.coords.longitude * 1000) / 1000 }, mm, chatId), () => toast('Нет доступа к геопозиции'), { timeout: 12000 });
+  } }, '📍 Моё местоположение'));
+  const mm = modal([h('h1', { class: 'brand', style: 'font-size:22px' }, '🌦 Погода'), h('p', { class: 'tag' }, 'Найдите город — покажу погоду сейчас, на неделю, по часам и осадки.'), ...quick, q, list]);
+  let t = null, seq = 0;
+  q.oninput = () => {
+    clearTimeout(t); const s = q.value.trim(), my = ++seq;
+    if (s.length < 2) return list.replaceChildren(h('div', { class: 'empty' }, 'Начните вводить название города'));
+    t = setTimeout(async () => {
+      try {
+        const res = await wxFind(s); if (my !== seq) return;
+        list.replaceChildren(...(res.length ? res : [h('div', { class: 'empty' }, 'Город не найден')]).map((p) => !p.name ? p : h('button', { class: 'row', onclick: () => openWxPlace(p, mm, chatId) }, h('div', { class: 'mid' }, h('b', {}, p.name), h('div', { class: 'pv' }, [p.admin1, p.country].filter(Boolean).join(', '))))));
+      } catch { if (my === seq) list.replaceChildren(h('div', { class: 'empty' }, 'Нет связи с сервисом поиска городов')); }
+    }, 350);
+  };
+  q.focus();
+}
+
+/* ---------- Курсы валют ---------- */
+const CUR_ALIAS = { 'доллар': 'USD', 'доллара': 'USD', 'долларов': 'USD', 'долл': 'USD', 'баксов': 'USD', '$': 'USD', 'usd': 'USD', 'евро': 'EUR', '€': 'EUR', 'eur': 'EUR', 'рубль': 'RUB', 'рубля': 'RUB', 'рублей': 'RUB', 'руб': 'RUB', '₽': 'RUB', 'rub': 'RUB',
+  'юань': 'CNY', 'юаня': 'CNY', 'юаней': 'CNY', 'cny': 'CNY', 'фунт': 'GBP', 'фунта': 'GBP', 'фунтов': 'GBP', 'gbp': 'GBP', 'тенге': 'KZT', 'kzt': 'KZT', 'гривна': 'UAH', 'гривны': 'UAH', 'гривен': 'UAH', 'uah': 'UAH',
+  'лира': 'TRY', 'лиры': 'TRY', 'лир': 'TRY', 'try': 'TRY', 'иена': 'JPY', 'иены': 'JPY', 'иен': 'JPY', 'jpy': 'JPY', 'франк': 'CHF', 'франка': 'CHF', 'франков': 'CHF', 'chf': 'CHF', 'злотый': 'PLN', 'злотых': 'PLN', 'pln': 'PLN', 'драм': 'AMD', 'драмов': 'AMD', 'amd': 'AMD', 'лари': 'GEL', 'gel': 'GEL' };
+const CUR_LIST = ['RUB', 'USD', 'EUR', 'CNY', 'GBP', 'KZT', 'TRY', 'UAH', 'JPY', 'CHF'];
+const CUR_FLAG = { USD: '🇺🇸', EUR: '🇪🇺', CNY: '🇨🇳', GBP: '🇬🇧', KZT: '🇰🇿', TRY: '🇹🇷', UAH: '🇺🇦', JPY: '🇯🇵', CHF: '🇨🇭', PLN: '🇵🇱', AMD: '🇦🇲', GEL: '🇬🇪', RUB: '🇷🇺' };
+const fmtN = (x, d) => { const n = Math.abs(x) >= 100 ? 2 : Math.abs(x) >= 1 ? 2 : 4; return x.toLocaleString('ru-RU', { minimumFractionDigits: d == null ? n : d, maximumFractionDigits: d == null ? n : d }); };
+async function cbrGet() { const r = await fetch('https://www.cbr-xml-daily.ru/daily_json.js'); if (!r.ok) throw new Error('cbr'); return r.json(); }
+const cbrRub = (j, c) => (c === 'RUB' ? 1 : j.Valute[c] ? j.Valute[c].Value / j.Valute[c].Nominal : NaN);
+async function currencyRates(chatId) {
+  try {
+    const j = await cbrGet(), L = ['💱 Курсы ЦБ РФ на ' + new Date(j.Date).toLocaleDateString('ru-RU'), ''];
+    ['USD', 'EUR', 'CNY', 'GBP', 'KZT', 'TRY', 'UAH', 'JPY', 'CHF'].forEach((c) => {
+      const v = j.Valute[c]; if (!v) return; const now = v.Value / v.Nominal, was = v.Previous / v.Nominal, d = now - was;
+      L.push((CUR_FLAG[c] || '') + ' ' + (v.Nominal > 1 ? v.Nominal + ' ' : '1 ') + c + ' = ' + fmtN(v.Value) + ' ₽  ' + (Math.abs(d) < 0.00005 ? '•' : (d > 0 ? '▲ ' : '▼ ') + fmtN(Math.abs(d * v.Nominal))));
+    });
+    L.push('', 'Стрелка — изменение к предыдущему курсу ЦБ.');
+    botSay(chatId, L.join('\n'), CBOT);
+  } catch { botSay(chatId, 'Не получилось получить курсы: нет связи с сервисом ЦБ. Попробуйте позже.', CBOT); }
+}
+async function currencyCrypto(chatId) {
+  try {
+    const ids = { bitcoin: 'BTC', ethereum: 'ETH', 'the-open-network': 'TON', solana: 'SOL', tether: 'USDT', ripple: 'XRP' };
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd,rub&include_24hr_change=true&ids=' + Object.keys(ids).join(',')); if (!r.ok) throw new Error('cg');
+    const j = await r.json(), L = ['🪙 Криптовалюты (CoinGecko)', ''];
+    Object.keys(ids).forEach((k) => { const v = j[k]; if (!v) return; const ch = v.usd_24h_change; L.push(ids[k] + ' = $' + fmtN(v.usd) + ' · ' + fmtN(v.rub, 0) + ' ₽' + (ch != null ? '  ' + (ch >= 0 ? '▲ ' : '▼ ') + fmtN(Math.abs(ch), 1) + '% за 24ч' : '')); });
+    botSay(chatId, L.join('\n'), CBOT);
+  } catch { botSay(chatId, 'Не получилось получить криптокурсы: сервис недоступен или лимит запросов. Попробуйте через минуту.', CBOT); }
+}
+async function currencyConvert(chatId, amount, from, to) {
+  try {
+    const j = await cbrGet(), a = cbrRub(j, from), b = cbrRub(j, to);
+    if (!(a > 0) || !(b > 0)) return botSay(chatId, 'Эту валюту я пока не знаю. Доступны: ' + CUR_LIST.join(', ') + ' (и ещё PLN, AMD, GEL).', CBOT);
+    const res = amount * a / b;
+    botSay(chatId, '💱 ' + fmtN(amount) + ' ' + from + ' = ' + fmtN(res) + ' ' + to + '\n\nКурс: 1 ' + from + ' = ' + fmtN(a / b, 4) + ' ' + to + ' (ЦБ РФ на ' + new Date(j.Date).toLocaleDateString('ru-RU') + ')', CBOT);
+  } catch { botSay(chatId, 'Не получилось конвертировать: нет связи с сервисом ЦБ.', CBOT); }
+}
+function currencyReact(chatId, text) {
+  const t = text.trim().toLowerCase().replace(/\s+/g, ' ');
+  const m = /^([\d\s.,]+?)\s*([a-zа-я$€₽]+)\s+(?:в|to|->|=|в\s)\s*([a-zа-я$€₽]+)$/i.exec(t);
+  if (m) { const amount = parseFloat(m[1].replace(/\s/g, '').replace(',', '.')), f = CUR_ALIAS[m[2]] || m[2].toUpperCase(), to = CUR_ALIAS[m[3]] || m[3].toUpperCase(); if (amount > 0) return currencyConvert(chatId, amount, f, to); }
+  if (/крипт|биткоин|bitcoin|btc|эфир|eth|ton/.test(t)) return currencyCrypto(chatId);
+  if (/^(привет|помощь|help|\/start|\/help)$/.test(t)) return botSay(chatId, BOT_TEXT[CBOT], CBOT);
+  if (/курс|валют|доллар|евро|юан/.test(t) || !t) return currencyRates(chatId);
+  const one = CUR_ALIAS[t] || (/^[a-z]{3}$/.test(t) ? t.toUpperCase() : null); if (one && one !== 'RUB') return currencyConvert(chatId, 1, one, 'RUB');
+  botSay(chatId, 'Напишите, например: «курс», «крипта» или «100 usd в rub».', CBOT);
+}
+function openCurrency() {
+  const chatId = S.active, amt = h('input', { class: 'inp', type: 'number', inputmode: 'decimal', placeholder: 'Сумма', value: '100' });
+  const sel = (def) => h('select', { class: 'inp' }, CUR_LIST.map((c) => h('option', { value: c, selected: c === def ? '' : null }, (CUR_FLAG[c] || '') + ' ' + c)));
+  const f = sel('USD'), t = sel('RUB');
+  const go = async (txt, fn) => { mm.remove(); await sendMsg(txt, 'text', null, chatId); fn(); };
+  const mm = modal([h('h1', { class: 'brand', style: 'font-size:22px' }, '💱 Курсы'),
+    h('button', { class: 'btn', style: 'margin:6px 0', onclick: () => go('💱 Курсы валют ЦБ РФ', () => currencyRates(chatId)) }, '💵 Курсы валют (ЦБ РФ)'),
+    h('button', { class: 'btn', style: 'margin:6px 0', onclick: () => go('🪙 Криптовалюты', () => currencyCrypto(chatId)) }, '🪙 Криптовалюты'),
+    h('h2', { style: 'font-size:16px;margin:14px 0 6px' }, 'Конвертер'), amt, h('div', { style: 'display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0' }, f, t),
+    h('button', { class: 'btn', onclick: () => { const a = parseFloat(String(amt.value).replace(',', '.')); if (!(a > 0)) return toast('Введите сумму'); go(fmtN(a) + ' ' + f.value + ' в ' + t.value, () => currencyConvert(chatId, a, f.value, t.value)); } }, 'Конвертировать')]);
+}
+
+/* ---------- Переводчик ---------- */
+const TR_LANGS = { en: 'английский', ru: 'русский', de: 'немецкий', fr: 'французский', es: 'испанский', it: 'итальянский', pt: 'португальский', zh: 'китайский', ja: 'японский', ko: 'корейский', tr: 'турецкий', ar: 'арабский', uk: 'украинский', kk: 'казахский', pl: 'польский' };
+const trLang = () => cfg.get('trLang') || 'en';
+async function trDo(chatId, text) {
+  const to = trLang();
+  try {
+    const r = await fetch('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text.slice(0, 480)) + '&langpair=Autodetect|' + to);
+    const j = await r.json(), out = j && j.responseData && j.responseData.translatedText;
+    if (!out || (j.responseStatus && +j.responseStatus >= 400)) throw new Error('empty');
+    botSay(chatId, '🌐 → ' + TR_LANGS[to] + '\n\n' + out + (text.length > 480 ? '\n\n(Переведены первые 480 символов)' : ''), TBOT);
+  } catch { botSay(chatId, 'Не получилось перевести: нет связи или достигнут дневной лимит сервиса. Попробуйте позже.', TBOT); }
+}
+function trReact(chatId, text) {
+  const m = /^(?:язык|lang|перевод на|переводи на)\s+(.+)$/i.exec(text.trim());
+  if (m) { const w = m[1].trim().toLowerCase(), k = Object.keys(TR_LANGS).find((c) => c === w || TR_LANGS[c].startsWith(w.slice(0, 5))); if (k) { cfg.set('trLang', k); return botSay(chatId, 'Хорошо, перевожу на: ' + TR_LANGS[k] + '. Пишите текст.', TBOT); } return botSay(chatId, 'Такого языка не знаю. Нажмите «🌐 Язык», чтобы выбрать из списка.', TBOT); }
+  if (/^(привет|помощь|help|\/start|\/help)$/i.test(text.trim())) return botSay(chatId, BOT_TEXT[TBOT], TBOT);
+  trDo(chatId, text);
+}
+function openTrLang() {
+  const chatId = S.active;
+  const mm = modal([h('h1', { class: 'brand', style: 'font-size:22px' }, '🌐 Язык перевода'), h('p', { class: 'tag' }, 'Сейчас: ' + TR_LANGS[trLang()]),
+    h('div', { style: 'display:grid;grid-template-columns:1fr 1fr;gap:8px' }, Object.keys(TR_LANGS).map((k) => h('button', { class: 'btn', style: k === trLang() ? '' : 'background:var(--panel2);color:var(--text)', onclick: async () => { mm.remove(); cfg.set('trLang', k); await sendMsg('Язык: ' + TR_LANGS[k], 'text', null, chatId); botSay(chatId, 'Хорошо, перевожу на: ' + TR_LANGS[k] + '. Пишите текст.', TBOT); } }, TR_LANGS[k].charAt(0).toUpperCase() + TR_LANGS[k].slice(1))))]);
+}
+
+/* ---------- Напоминалка ---------- */
+function parseRemind(t0) {
+  let s = t0.trim().replace(/^напомни(?:ть)?(?:\s+мне)?\s*/i, ''), m; const now = new Date();
+  if ((m = /^через\s+(?:(\d+)\s*)?(полчаса|час(?:а|ов)?|ч|минуту|минуты|минут|мин|дня|дней|день|неделю|недели|недель)\s*(.*)$/i.exec(s))) {
+    let n = m[1] ? +m[1] : 1; const u = m[2].toLowerCase(); let ms;
+    if (u === 'полчаса') ms = 30 * 60000; else if (/^(час|ч)/.test(u)) ms = n * 3600000; else if (/^мин/.test(u)) ms = n * 60000; else if (/^(дн|день)/.test(u)) ms = n * 86400000; else ms = n * 7 * 86400000;
+    return { at: Date.now() + ms, text: m[3].trim() };
+  }
+  if ((m = /^(сегодня|завтра|послезавтра)?\s*(?:в\s+)?(\d{1,2})[:.](\d{2})\s*(.*)$/i.exec(s)) || (m = /^(сегодня|завтра|послезавтра)?\s*в\s+(\d{1,2})()\s+(.*)$/i.exec(s))) {
+    const d = new Date(now); d.setHours(+m[2], m[3] ? +m[3] : 0, 0, 0);
+    if (/^завтра/i.test(m[1] || '')) d.setDate(d.getDate() + 1); else if (/^послезавтра/i.test(m[1] || '')) d.setDate(d.getDate() + 2); else if (d.getTime() <= Date.now()) d.setDate(d.getDate() + 1);
+    if (+m[2] > 23 || (m[3] && +m[3] > 59)) return null;
+    return { at: d.getTime(), text: m[4].trim() };
+  }
+  if ((m = /^(завтра|послезавтра)\s+(.*)$/i.exec(s))) { const d = new Date(now); d.setDate(d.getDate() + (m[1].toLowerCase() === 'завтра' ? 1 : 2)); d.setHours(9, 0, 0, 0); return { at: d.getTime(), text: m[2].trim() }; }
+  return null;
+}
+const remList = () => cfg.get('reminders').filter((x) => x.bot && x.at > Date.now()).sort((a, b) => a.at - b.at);
+const remWhen = (ms) => new Date(ms).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+function remAdd(chatId, at, text) {
+  cfg.set('reminders', cfg.get('reminders').concat([{ id: Math.random().toString(36).slice(2), chat: chatId, text: text.slice(0, 200), at, bot: true }]));
+  botSay(chatId, '⏰ Хорошо! Напомню ' + remWhen(at) + ':\n«' + text + '»', RBOT);
+}
+function remReact(chatId, text) {
+  const t = text.trim();
+  if (/^(привет|помощь|help|\/start|\/help)$/i.test(t)) return botSay(chatId, BOT_TEXT[RBOT], RBOT);
+  if (/^(мои напоминания|напоминания|список|\/list)$/i.test(t)) { const l = remList(); return botSay(chatId, l.length ? '⏰ Ваши напоминания:\n' + l.map((x, i) => (i + 1) + '. ' + remWhen(x.at) + ' — ' + x.text).join('\n') + '\n\nУдалить: «отмена 1»' : 'Напоминаний нет. Напишите, например: «напомни через час позвонить».', RBOT); }
+  let m = /^(?:отмена|удалить|отменить)\s+(\d+)$/i.exec(t);
+  if (m) { const l = remList(), x = l[+m[1] - 1]; if (!x) return botSay(chatId, 'Нет напоминания с таким номером. Напишите «мои напоминания».', RBOT); cfg.set('reminders', cfg.get('reminders').filter((y) => y.id !== x.id)); return botSay(chatId, 'Готово, напоминание отменено: «' + x.text + '»', RBOT); }
+  const p = parseRemind(t);
+  if (!p) return botSay(chatId, 'Не понял время. Примеры:\n• напомни через 10 минут выключить чайник\n• напомни завтра в 9:00 позвонить\n• в 18:30 тренировка', RBOT);
+  if (!p.text) return botSay(chatId, 'О чём напомнить? Напишите заново вместе с текстом, например: «напомни ' + t.replace(/^напомни\s*/i, '') + ' позвонить маме».', RBOT);
+  remAdd(chatId, p.at, p.text);
+}
+function openRemindBot() {
+  const chatId = S.active, tx = h('input', { class: 'inp', placeholder: 'О чём напомнить?', maxlength: 150 });
+  const d0 = new Date(Date.now() + 3600000); d0.setMinutes(0, 0, 0); const pad = (n) => String(n).padStart(2, '0');
+  const dt = h('input', { class: 'inp', type: 'datetime-local', value: d0.getFullYear() + '-' + pad(d0.getMonth() + 1) + '-' + pad(d0.getDate()) + 'T' + pad(d0.getHours()) + ':00' });
+  const mm = modal([h('h1', { class: 'brand', style: 'font-size:22px' }, '⏰ Напомнить'), h('label', { class: 'f' }, 'О чём'), tx, h('label', { class: 'f' }, 'Когда'), dt,
+    h('button', { class: 'btn', onclick: async () => { const at = new Date(dt.value).getTime(), text = tx.value.trim(); if (!text) return toast('Напишите, о чём напомнить'); if (!(at > Date.now())) return toast('Выберите время в будущем'); mm.remove(); await sendMsg('⏰ Напомнить ' + remWhen(at) + ': ' + text, 'text', null, chatId); remAdd(chatId, at, text); } }, 'Создать напоминание'),
+    h('button', { class: 'btn', style: 'margin-top:8px;background:var(--panel2);color:var(--text)', onclick: async () => { mm.remove(); await sendMsg('Мои напоминания', 'text', null, chatId); remReact(chatId, 'мои напоминания'); } }, 'Мои напоминания')]);
+  tx.focus();
+}
+
+/* ---------- Игры ---------- */
+const QUIZ = [
+  ['Столица Австралии?', ['Сидней', 'Канберра', 'Мельбурн', 'Перт'], 1], ['Сколько планет в Солнечной системе?', ['7', '8', '9', '10'], 1], ['Какая самая длинная река в России?', ['Волга', 'Лена', 'Обь', 'Енисей'], 2],
+  ['Кто написал «Войну и мир»?', ['Достоевский', 'Чехов', 'Толстой', 'Тургенев'], 2], ['Химический символ золота?', ['Ag', 'Au', 'Fe', 'Gd'], 1], ['Самое большое озеро России и мира по глубине?', ['Ладожское', 'Онежское', 'Байкал', 'Телецкое'], 2],
+  ['В каком году человек впервые полетел в космос?', ['1957', '1961', '1969', '1975'], 1], ['Сколько байт в килобайте (по классике)?', ['100', '512', '1000', '1024'], 3], ['Какой океан самый большой?', ['Атлантический', 'Индийский', 'Тихий', 'Северный Ледовитый'], 2],
+  ['Столица Японии?', ['Киото', 'Осака', 'Токио', 'Нагоя'], 2], ['Сколько цветов в радуге?', ['5', '6', '7', '8'], 2], ['Какой газ мы вдыхаем для жизни?', ['Азот', 'Кислород', 'Гелий', 'Водород'], 1],
+  ['Кто нарисовал «Мону Лизу»?', ['Рафаэль', 'Микеланджело', 'Леонардо да Винчи', 'Ван Гог'], 2], ['Сколько континентов на Земле (по распространённой модели)?', ['5', '6', '7', '8'], 2], ['Самая высокая гора мира?', ['Эльбрус', 'Эверест', 'Монблан', 'Килиманджаро'], 1],
+  ['Какая планета ближе всего к Солнцу?', ['Венера', 'Меркурий', 'Марс', 'Земля'], 1], ['Столица Франции?', ['Лион', 'Марсель', 'Париж', 'Ницца'], 2], ['Сколько минут в часе?', ['50', '60', '90', '100'], 1],
+  ['Какое животное самое быстрое на суше?', ['Лев', 'Гепард', 'Антилопа', 'Лошадь'], 1], ['Сколько будет 12 × 12?', ['124', '134', '144', '154'], 2], ['Как называется наша галактика?', ['Андромеда', 'Млечный Путь', 'Вихрь', 'Сомбреро'], 1],
+  ['Кто был первым космонавтом?', ['Герман Титов', 'Юрий Гагарин', 'Алексей Леонов', 'Нил Армстронг'], 1], ['Какой язык программирования создал Гвидо ван Россум?', ['Java', 'Python', 'Ruby', 'Go'], 1], ['Сколько сторон у шестиугольника?', ['5', '6', '7', '8'], 1],
+  ['Что измеряют в герцах?', ['Громкость', 'Частоту', 'Мощность', 'Напряжение'], 1],
+];
+const gst = () => cfg.get('gameState') || {};
+const gset = (o) => cfg.set('gameState', Object.assign({}, gst(), o));
+const gp = (arr) => arr[Math.floor(Math.random() * arr.length)];
+function quizAsk(chatId) {
+  const st = gst().quiz || { score: 0, n: 0 }; const i = Math.floor(Math.random() * QUIZ.length), q = QUIZ[i];
+  gset({ quiz: { score: st.score, n: st.n, cur: i } });
+  botSay(chatId, '🧠 Вопрос ' + (st.n + 1) + ':\n' + q[0] + '\n\n' + q[1].map((o, k) => (k + 1) + '. ' + o).join('\n') + '\n\nОтветьте номером (1–4). «стоп» — закончить.', GBOT);
+}
+function gamesReact(chatId, text) {
+  const t = text.trim().toLowerCase(), g = gst();
+  if (/^(привет|помощь|help|\/start|\/help)$/.test(t)) return botSay(chatId, BOT_TEXT[GBOT], GBOT);
+  if (/кубик|кости|dice/.test(t)) { const a = 1 + Math.floor(Math.random() * 6), b = 1 + Math.floor(Math.random() * 6), two = /кости/.test(t); return botSay(chatId, '🎲 Выпало: ' + (two ? a + ' и ' + b + ' (сумма ' + (a + b) + ')' : a), GBOT); }
+  if (/монет|орел|орёл|решк/.test(t)) return botSay(chatId, '🪙 ' + gp(['Орёл!', 'Решка!']), GBOT);
+  if (/угадай|guess/.test(t) && !/^\d+$/.test(t)) { gset({ guess: { n: 1 + Math.floor(Math.random() * 100), tries: 0 }, quiz: null }); return botSay(chatId, '🔢 Я загадал число от 1 до 100. Попробуйте угадать! Пишите числа. «сдаюсь» — узнать ответ.', GBOT); }
+  if (/викторин|quiz/.test(t)) { gset({ guess: null, quiz: { score: 0, n: 0 } }); return quizAsk(chatId); }
+  if (/^(камень|ножницы|бумага)$/.test(t)) {
+    const my = gp(['камень', 'ножницы', 'бумага']), win = { камень: 'ножницы', ножницы: 'бумага', бумага: 'камень' }, ic = { камень: '🪨', ножницы: '✂️', бумага: '📄' };
+    return botSay(chatId, 'Вы: ' + ic[t] + ' ' + t + '\nЯ: ' + ic[my] + ' ' + my + '\n\n' + (my === t ? '🤝 Ничья!' : win[t] === my ? '🎉 Вы выиграли!' : '😎 Я выиграл!'), GBOT);
+  }
+  if (/^шар\b/.test(t)) return botSay(chatId, '🔮 ' + gp(['Бесспорно', 'Скорее всего да', 'Знаки говорят — да', 'Пока не ясно, спросите позже', 'Лучше не рассчитывать на это', 'Мой ответ — нет', 'Весьма сомнительно', 'Определённо да']), GBOT);
+  if (g.quiz) {
+    if (/^(стоп|хватит|stop)$/.test(t)) { gset({ quiz: null }); return botSay(chatId, '🏁 Викторина окончена. Верных ответов: ' + g.quiz.score + ' из ' + g.quiz.n, GBOT); }
+    if (g.quiz.cur == null) return; // следующий вопрос ещё задаётся
+    const q = QUIZ[g.quiz.cur]; let k = /^[1-4]$/.test(t) ? +t - 1 : q[1].findIndex((o) => o.toLowerCase() === t);
+    if (k < 0) return botSay(chatId, 'Ответьте номером от 1 до 4 (или «стоп»).', GBOT);
+    const ok = k === q[2], score = g.quiz.score + (ok ? 1 : 0), n = g.quiz.n + 1; gset({ quiz: { score, n } });
+    botSay(chatId, (ok ? '✅ Верно!' : '❌ Нет. Правильный ответ: ' + q[1][q[2]]) + '\nСчёт: ' + score + ' из ' + n, GBOT);
+    return setTimeout(() => quizAsk(chatId), 900);
+  }
+  if (g.guess && /^(сдаюсь|сдаться)$/.test(t)) { gset({ guess: null }); return botSay(chatId, 'Я загадал ' + g.guess.n + '. Сыграем ещё? Напишите «угадай число».', GBOT); }
+  if (g.guess && /^\d+$/.test(t)) {
+    const v = +t, tries = g.guess.tries + 1;
+    if (v === g.guess.n) { gset({ guess: null }); try { confetti(); } catch { /* ignore */ } return botSay(chatId, '🎉 Угадали! Это ' + v + '. Попыток: ' + tries, GBOT); }
+    gset({ guess: { n: g.guess.n, tries } }); return botSay(chatId, (v < g.guess.n ? '⬆️ Больше' : '⬇️ Меньше') + '. Попыток: ' + tries, GBOT);
+  }
+  botSay(chatId, 'Не понял. Напишите: кубик, монетка, угадай число, викторина, камень / ножницы / бумага, шар (магический шар).', GBOT);
+}
+function openGames() {
+  const chatId = S.active, G = [['🎲 Кубик', 'кубик'], ['🪙 Монетка', 'монетка'], ['🔢 Угадай число', 'угадай число'], ['🧠 Викторина', 'викторина'], ['🪨 Камень', 'камень'], ['✂️ Ножницы', 'ножницы'], ['📄 Бумага', 'бумага'], ['🔮 Магический шар', 'шар']];
+  const mm = modal([h('h1', { class: 'brand', style: 'font-size:22px' }, '🎮 Играть'), h('div', { style: 'display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px' }, G.map(([t, c]) => h('button', { class: 'btn', onclick: async () => { mm.remove(); await sendMsg(c, 'text', null, chatId); gamesReact(chatId, c); } }, t)))]);
+}
+
+/* ---------- Заметки (в облаке) ---------- */
+async function notesLoad() {
+  const sn = await db.collection('botNotes').where('owner', '==', S.user.uid).limit(200).get();
+  return sn.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => a.ts - b.ts);
+}
+const notesText = (L) => (L.length ? '📝 Ваши заметки:\n' + L.map((n, i) => (i + 1) + '. ' + (n.done ? '✅ ' : '') + n.text).join('\n') + '\n\n«готово 2» — отметить, «удалить 2» — удалить' : 'Заметок пока нет. Просто напишите текст — я сохраню.');
+async function notesReact(chatId, text) {
+  const t = text.trim();
+  try {
+    if (/^(привет|помощь|help|\/start|\/help)$/i.test(t)) return botSay(chatId, BOT_TEXT[NBOT], NBOT);
+    if (/^(заметки|список|мои заметки|\/notes|\/list)$/i.test(t)) return botSay(chatId, notesText(await notesLoad()), NBOT);
+    let m = /^(?:удалить|удали|del)\s+(\d+)$/i.exec(t);
+    if (m) { const L = await notesLoad(), n = L[+m[1] - 1]; if (!n) return botSay(chatId, 'Нет заметки с таким номером. Напишите «заметки».', NBOT); await db.collection('botNotes').doc(n.id).delete(); return botSay(chatId, '🗑 Удалено: «' + n.text + '»', NBOT); }
+    m = /^(?:готово|сделано|done)\s+(\d+)$/i.exec(t);
+    if (m) { const L = await notesLoad(), n = L[+m[1] - 1]; if (!n) return botSay(chatId, 'Нет заметки с таким номером. Напишите «заметки».', NBOT); await db.collection('botNotes').doc(n.id).update({ done: !n.done }); return botSay(chatId, (n.done ? '↩️ Возвращено в работу: «' : '✅ Готово: «') + n.text + '»', NBOT); }
+    const body = t.replace(/^(?:заметка|запиши|записать|добавь|\/note|\+)\s*:?\s*/i, '').trim();
+    if (!body) return botSay(chatId, 'Что записать? Напишите текст заметки.', NBOT);
+    await db.collection('botNotes').add({ owner: S.user.uid, text: body.slice(0, 1000), ts: Date.now(), done: false });
+    botSay(chatId, '📝 Сохранено (заметок: ' + (await notesLoad()).length + ')', NBOT);
+  } catch (e) { botSay(chatId, 'Не получилось: ' + errText(e), NBOT); }
+}
+async function openNotes() {
+  const chatId = S.active, list = h('div', { class: 'mscroll', style: 'max-height:46vh;margin:8px 0' }), inp = h('input', { class: 'inp', placeholder: 'Новая заметка…', maxlength: 300 });
+  const draw = async () => {
+    try {
+      const L = await notesLoad();
+      list.replaceChildren(...(L.length ? L : [h('div', { class: 'empty' }, 'Заметок пока нет')]).map((n) => !n.id ? n : h('div', { class: 'urow' }, h('div', { class: 'nm', style: 'flex:1;white-space:pre-wrap;' + (n.done ? 'opacity:.55;text-decoration:line-through' : '') }, n.text),
+        h('button', { class: 'sm2', onclick: async () => { try { await db.collection('botNotes').doc(n.id).update({ done: !n.done }); draw(); } catch (e) { toast(errText(e)); } } }, n.done ? '↩️' : '✔'), h('button', { class: 'sm2 ban', onclick: async () => { try { await db.collection('botNotes').doc(n.id).delete(); draw(); } catch (e) { toast(errText(e)); } } }, '🗑'))));
+    } catch (e) { list.replaceChildren(h('div', { class: 'empty' }, errText(e, 'заметки'))); }
+  };
+  const add = async () => { const v = inp.value.trim(); if (!v) return; inp.value = ''; try { await db.collection('botNotes').add({ owner: S.user.uid, text: v.slice(0, 1000), ts: Date.now(), done: false }); draw(); } catch (e) { toast(errText(e)); } };
+  inp.onkeydown = (e) => { if (e.key === 'Enter') add(); };
+  const mm = modal([h('h1', { class: 'brand', style: 'font-size:22px' }, '📝 Заметки'), inp, h('button', { class: 'btn', style: 'margin-top:8px', onclick: add }, 'Добавить'), list,
+    h('button', { class: 'btn', style: 'background:var(--panel2);color:var(--text)', onclick: async () => { mm.remove(); await sendMsg('Мои заметки', 'text', null, chatId); notesReact(chatId, 'заметки'); } }, 'Показать в чате')]);
+  draw(); inp.focus();
+}
+
+/* ---------- каталог ботов ---------- */
+function openBotCatalog() {
+  const mm = modal([h('h1', { class: 'brand', style: 'font-size:22px' }, '🤖 Каталог ботов'), h('p', { class: 'tag' }, 'Нажмите на бота, чтобы открыть чат с ним.'),
+    h('div', { class: 'mscroll', style: 'max-height:60vh' }, Object.keys(BOTS).map((id) => h('button', { class: 'row', onclick: async () => {
+      mm.remove(); let p = S.peers[id];
+      if (!p || p.name === '…') { try { const sn = await db.collection('users').doc(id).get(); if (sn.exists) p = S.peers[id] = sn.data(); } catch { /* ignore */ } }
+      if (!p || !p.uid) return toast('Бот ещё не готов, попробуйте через минуту');
+      setTab('chats'); openWith(p);
+    } }, avatar({ uid: id, name: BOTS[id].name, color: BOTS[id].color }, ''), h('div', { class: 'mid' }, h('b', {}, BOTS[id].name), h('div', { class: 'pv' }, BOTS[id].bio), h('div', { class: 'pv' }, '@' + id)))))]);
+}
+
+const BOT_UI = {
+  botmaker: { label: '☰ Меню', title: 'Меню бота', open: () => openBotMenu(), react: (c, t) => botReact(c, t) },
+  weather_helper_bot: { label: '🌦 Погода', title: 'Погода', open: () => openWeather(), react: (c, t) => weatherReact(c, t) },
+  currency_helper_bot: { label: '💱 Курсы', title: 'Курсы валют', open: () => openCurrency(), react: (c, t) => currencyReact(c, t) },
+  translate_helper_bot: { label: '🌐 Язык', title: 'Язык перевода', open: () => openTrLang(), react: (c, t) => trReact(c, t) },
+  remind_helper_bot: { label: '⏰ Напомнить', title: 'Создать напоминание', open: () => openRemindBot(), react: (c, t) => remReact(c, t) },
+  games_helper_bot: { label: '🎮 Играть', title: 'Игры', open: () => openGames(), react: (c, t) => gamesReact(c, t) },
+  notes_helper_bot: { label: '📝 Заметки', title: 'Заметки', open: () => openNotes(), react: (c, t) => notesReact(c, t) },
+};
+function botMenuBtn() {
+  const b = botOf(S.active), u = b && BOT_UI[b]; if (!u) return null;
+  return h('button', { class: 'botmenu', title: u.title, onclick: u.open }, u.label);
+}
+function botDispatch(chatId, text) { const b = botOf(chatId), u = b && BOT_UI[b]; if (u) u.react(chatId, text); }
+
 function openBotMenu() {
   const nm = h('input', { class: 'inp', placeholder: 'Например: Погодный помощник', maxlength: 40 }), un = h('input', { class: 'inp', placeholder: 'например weather_helper_bot', maxlength: 32, autocapitalize: 'off', spellcheck: 'false' }), err = h('div', { class: 'err' });
   const chatId = S.active;
@@ -2042,6 +2758,7 @@ const $$ = (s) => [...document.querySelectorAll(s)];
 function switchAccount(slot) { ls.set('sp_active', slot); location.reload(); }
 function addAccount() { ls.set('sp_prev', SLOT); ls.set('sp_active', 'a' + Date.now().toString(36)); location.reload(); }
 async function logout() {
+  try { if (SID && S.user) { await db.collection('sessions').doc(SID).delete(); localStorage.removeItem('mc_sid_' + S.user.uid); } } catch { /* ignore */ }
   const rest = accounts().filter((x) => x.slot !== SLOT);
   ls.set('sp_accts', JSON.stringify(rest)); ls.set('sp_prev', ''); ls.set('sp_active', rest.length ? rest[0].slot : 'main');
   try { await auth.signOut(); } catch { /* ignore */ }
@@ -2124,6 +2841,8 @@ const FEATURES = {
   'Приватность и безопасность': ['Чёрный список', 'Скрыть «был(а) в сети»', 'Не отправлять «прочитано»', 'PIN-код на вход', 'Автоблокировка по таймеру', 'Несколько аккаунтов', 'Выход из аккаунта'],
   'Уведомления': ['Всплывающие уведомления', 'Предпросмотр текста', 'Звуки: 6 мелодий, громкость', 'Звук отправки', 'Режим «не беспокоить» по расписанию', 'Счётчик в заголовке вкладки и значке', 'Мигание заголовка'],
   'Администрирование': ['Синяя и золотая галочки у профилей', 'Блокировка аккаунтов администрацией', 'Панель разработчика под паролем (галочки, баны, правка профилей и групп)'],
+  'Боты и истории': ['Каталог ботов', 'BotMaker: заявки на создание ботов', 'Погодный помощник: сейчас, неделя, по часам, осадки, предупреждения', 'Утренняя сводка погоды и «Мой город»', 'Курсы валют ЦБ РФ и криптовалюты', 'Конвертер валют', 'Переводчик на 15 языков', 'Напоминалка: «через 10 минут…», «завтра в 9:00…»', 'Игры: кубик, монетка, угадай число', 'Викторина и камень-ножницы-бумага', 'Заметки и дела в облаке', 'Истории на 24 часа с просмотрами'],
+  'Навигация и сервис': ['Нижнее меню: Чаты, Звонки, Настройки', 'История звонков и обратный звонок', 'Счётчик пропущенных звонков', 'Папки чатов', 'Упоминания @логин с подсказкой', 'Ссылки-приглашения в группы', 'Список устройств и выход на других устройствах', 'Автообновление интерфейса', 'Автообновление самого приложения (APK)'],
   'Данные': ['Работа офлайн (кэш)', 'Индикатор отсутствия сети', 'Экспорт чата в файл', 'Экспорт и импорт настроек', 'Статистика', 'Сброс настроек', 'Установка как приложение (PWA)'],
 };
 const featCount = () => Object.values(FEATURES).reduce((n, a) => n + a.length, 0);
@@ -2230,18 +2949,18 @@ function openDevPanel() {
 }
 
 /* ---------- настройки ---------- */
-function openSettings(tab) {
+function openSettings(tab, full) {
   tab = tab || 'profile';
   const body = h('div', { class: 'body' }), nav = h('div', { class: 'nav' });
-  const wrap = h('div', { class: 'card setm' }, nav, body);
-  const m = h('div', { class: 'modal', onclick: (e) => { if (e.target === m) m.remove(); } }, wrap); document.body.append(m);
+  const wrap = h('div', { class: 'card setm' + (full ? ' full' : '') }, nav, body);
+  const m = h('div', { class: 'modal' + (full ? ' full' : ''), onclick: (e) => { if (!full && e.target === m) m.remove(); } }, wrap); document.body.append(m);
   const T = [['profile', '👤 Профиль'], ['look', '🎨 Оформление'], ['chat', '💬 Чаты'], ['notif', '🔔 Уведомления'], ['privacy', '🔒 Приватность'], ['acc', '👥 Аккаунты'], ['data', '💾 Данные'], ['about', 'ℹ️ О MinoChat']];
   const set = (k, v, re) => { cfg.set(k, v); if (['theme', 'acc', 'accCustom', 'wall', 'fs', 'bub', 'compact', 'anim', 'h12', 'glass', 'glassBlur', 'glassAlpha'].includes(k)) applyTheme(); if (re) re(); };
   const rl = (t, sub, ctl) => h('div', { class: 'rl' }, h('span', {}, t, sub ? h('small', {}, sub) : null), ctl);
   const tog = (k, t, sub, after) => rl(t, sub, h('input', { type: 'checkbox', checked: cfg.get(k) ? '' : null, onchange: (e) => { set(k, e.target.checked); after && after(e.target.checked); } }));
   const sel = (k, t, opts, sub, after) => rl(t, sub, h('select', { onchange: (e) => { set(k, e.target.value); after && after(); } }, opts.map(([v, l]) => h('option', { value: v, selected: String(cfg.get(k)) === v ? '' : null }, l))));
   const render = () => {
-    nav.replaceChildren(...T.map(([k, t]) => h('button', { class: tab === k ? 'on' : '', onclick: () => { tab = k; render(); } }, t)));
+    nav.replaceChildren(...T.map(([k, t]) => h('button', { class: tab === k ? 'on' : '', onclick: () => { tab = k; render(); } }, t)), full ? h('button', { class: 'closefull', onclick: () => m.remove() }, '✕ Закрыть') : null);
     const out = [];
     if (tab === 'profile') {
       const name = h('input', { class: 'inp', value: S.me.name, maxlength: 40 }), bio = h('textarea', { class: 'inp', rows: 2, maxlength: 120, placeholder: 'Пара слов о себе' }), st = h('input', { class: 'inp', value: S.me.status || '', maxlength: 40, placeholder: 'Например: на работе 💼' });
@@ -2316,6 +3035,7 @@ function openSettings(tab) {
       out.push(h('h2', {}, 'Приватность'),
         tog('hideSeen', 'Скрыть «был(а) в сети»', 'Другие увидят «был(а) недавно»', async (v) => { try { await db.collection('users').doc(S.user.uid).update({ hideSeen: v }); S.me.hideSeen = v; } catch (e) { toast(errText(e)); } }),
         tog('noRead', 'Не отправлять «прочитано»', 'Собеседник не увидит ✓✓'),
+        ...devicesBlock(),
         h('div', { class: 'sect', style: 'margin-left:0' }, 'PIN-код'),
         rl('PIN при входе', cfg.get('pin') ? 'Установлен' : 'Не задан', h('div', { style: 'display:flex;gap:6px' }, h('button', { class: 'sm2', onclick: () => { m.remove(); setPin(); } }, cfg.get('pin') ? 'Сменить' : 'Задать'), cfg.get('pin') ? h('button', { class: 'sm2', onclick: () => { cfg.set('pin', ''); try { sessionStorage.removeItem('mc_unl'); } catch { /* ignore */ } render(); } }, 'Убрать') : null)),
         sel('lockMin', 'Автоблокировка', [['0', 'Выключена'], ['1', 'Через 1 минуту'], ['5', 'Через 5 минут'], ['15', 'Через 15 минут'], ['60', 'Через час']], 'Нужен задать PIN', () => { cfg.set('lockMin', +cfg.get('lockMin')); }),

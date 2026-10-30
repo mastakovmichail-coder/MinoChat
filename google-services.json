@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "269701754688-iuv6nmf5u4kteom616a5odraj4ldh0mu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.minochat.mobile",
+            "certificate_hash": "8fbb51f8883e10c71313f9aa2cb0106af8986d3f"
+          }
+        },
+        {
           "client_id": "269701754688-abe1ph77iv160q0ogk7886vmfnmh2qkk.apps.googleusercontent.com",
           "client_type": 3
         }

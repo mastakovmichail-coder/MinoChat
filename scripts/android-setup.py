@@ -76,6 +76,20 @@ android {
             keyAlias 'minochat'
             keyPassword 'minochat123'
         }
+        release {
+            storeFile file('../../minochat.keystore')
+            storePassword 'minochat123'
+            keyAlias 'minochat'
+            keyPassword 'minochat123'
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            debuggable false
+            minifyEnabled false
+            shrinkResources false
+        }
     }
 }
 """
@@ -212,3 +226,107 @@ if 'KeepAliveService' not in _m:
     </application>''')
 open(MAN, 'w', encoding='utf8').write(_m)
 print('keep-alive service added')
+
+# 10) автообновление самого APK: мост MCNative (версия, разрешение, скачивание, установка)
+_jd2 = os.path.dirname(_glob.glob('android/app/src/main/java/**/MainActivity.java', recursive=True)[0])
+open(_jd2 + '/McFileProvider.java', 'w', encoding='utf8').write('package app.minochat.mobile;\n\npublic class McFileProvider extends androidx.core.content.FileProvider {}\n')
+open(_jd2 + '/MCNative.java', 'w', encoding='utf8').write('''package app.minochat.mobile;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
+import android.webkit.JavascriptInterface;
+import androidx.core.content.FileProvider;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class MCNative {
+    private final Activity act;
+    MCNative(Activity a) { act = a; }
+
+    @JavascriptInterface public int versionCode() {
+        try {
+            PackageInfo p = act.getPackageManager().getPackageInfo(act.getPackageName(), 0);
+            return (int) (Build.VERSION.SDK_INT >= 28 ? p.getLongVersionCode() : p.versionCode);
+        } catch (Exception e) { return 0; }
+    }
+
+    @JavascriptInterface public boolean canInstall() {
+        return Build.VERSION.SDK_INT < 26 || act.getPackageManager().canRequestPackageInstalls();
+    }
+
+    @JavascriptInterface public void allowInstall() {
+        act.runOnUiThread(new Runnable() { public void run() {
+            try { act.startActivity(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + act.getPackageName()))); } catch (Exception e) { /* ignore */ }
+        } });
+    }
+
+    private void state(final String s) {
+        act.runOnUiThread(new Runnable() { public void run() {
+            try { ((MainActivity) act).getBridge().getWebView().evaluateJavascript("window.__apkState&&window.__apkState('" + s + "')", null); } catch (Exception e) { /* ignore */ }
+        } });
+    }
+
+    @JavascriptInterface public void install(final String url) {
+        if (url == null || !url.startsWith("https://speeky-a0653.web.app/")) { state("error"); return; }
+        new Thread(new Runnable() { public void run() {
+            try {
+                File dir = new File(act.getCacheDir(), "updates"); dir.mkdirs();
+                File f = new File(dir, "MinoChat.apk"); if (f.exists()) f.delete();
+                HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
+                c.setConnectTimeout(20000); c.setReadTimeout(60000);
+                if (c.getResponseCode() != 200) { state("error"); return; }
+                InputStream in = c.getInputStream(); FileOutputStream out = new FileOutputStream(f);
+                byte[] buf = new byte[65536]; int n; long total = 0;
+                while ((n = in.read(buf)) > 0) { out.write(buf, 0, n); total += n; }
+                out.close(); in.close();
+                if (total < 100000) { state("error"); return; }
+                Uri u = FileProvider.getUriForFile(act, act.getPackageName() + ".mcupdate", f);
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setDataAndType(u, "application/vnd.android.package-archive");
+                i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+                state("ready");
+                act.startActivity(i);
+            } catch (Exception e) { state("error"); }
+        } }).start();
+    }
+}
+''')
+os.makedirs(RES + '/xml', exist_ok=True)
+open(RES + '/xml/mc_paths.xml', 'w', encoding='utf8').write('<?xml version="1.0" encoding="utf-8"?>\n<paths>\n    <cache-path name="mcupdates" path="updates/" />\n</paths>\n')
+_m2 = open(MAN, encoding='utf8').read()
+if 'REQUEST_INSTALL_PACKAGES' not in _m2:
+    _m2 = _m2.replace('</manifest>', '    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />\n</manifest>')
+if 'McFileProvider' not in _m2:
+    _m2 = _m2.replace('</application>', '''        <provider android:name=".McFileProvider" android:authorities="${applicationId}.mcupdate" android:exported="false" android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/mc_paths" />
+        </provider>
+    </application>''')
+open(MAN, 'w', encoding='utf8').write(_m2)
+_ma = open(_jd2 + '/MainActivity.java', encoding='utf8').read()
+if 'MCNative' not in _ma:
+    _ma = _ma.replace('        super.onCreate(b);\n', '        super.onCreate(b);\n        try { getBridge().getWebView().addJavascriptInterface(new MCNative(this), "MCNative"); } catch (Exception e) { /* ignore */ }\n', 1)
+    open(_jd2 + '/MainActivity.java', 'w', encoding='utf8').write(_ma)
+# versionCode / versionName из package.json (3.7.0 -> 30700), чтобы приложение понимало, что вышла новая версия
+import json as _json
+_ver = _json.load(open('package.json'))['version']; _p = [int(x) for x in _ver.split('.')]
+_code = _p[0] * 10000 + _p[1] * 100 + _p[2]
+_ag = open('android/app/build.gradle', encoding='utf8').read()
+_ag = _re.sub(r'versionCode\s+\d+', 'versionCode %d' % _code, _ag, count=1)
+_ag = _re.sub(r'versionName\s+"[^"]*"', 'versionName "%s"' % _ver, _ag, count=1)
+open('android/app/build.gradle', 'w', encoding='utf8').write(_ag)
+open('apk.json', 'w', encoding='utf8').write(_json.dumps({'versionCode': _code, 'versionName': _ver, 'file': 'MinoChat.apk'}))
+print('apk self-update bridge added, versionCode', _code)
+
+# 11) явно запрещаем отладку в манифесте (RuStore отклоняет debug-сборки)
+_mm = open(MAN, encoding='utf8').read()
+if 'android:debuggable' not in _mm:
+    _mm = _mm.replace('<application', '<application android:debuggable="false"', 1)
+    open(MAN, 'w', encoding='utf8').write(_mm)
+print('debuggable=false')
