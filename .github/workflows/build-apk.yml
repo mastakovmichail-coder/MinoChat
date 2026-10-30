@@ -21,6 +21,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: MinoChat-APK
-          path: |
-            MinoChat.apk
-            apk.json
+          path: MinoChat.apk

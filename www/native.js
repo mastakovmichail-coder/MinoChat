@@ -59,32 +59,3 @@
   try { const A = C.Plugins.App; if (A) A.addListener('appStateChange', (s) => { if (s && s.isActive) setTimeout(check, 1500); }); } catch { /* ignore */ }
   setInterval(check, 30 * 60 * 1000);
 })();
-
-/* ---------- автообновление самого приложения (APK) ---------- */
-(function () {
-  const C = window.Capacitor, N = window.MCNative;
-  if (!C || !C.isNativePlatform || !C.isNativePlatform() || !N) return;
-  const BASE = 'https://speeky-a0653.web.app';
-  const say = (t) => { try { if (typeof toast === 'function') toast(t); } catch { /* ignore */ } };
-  let busy = false, tried = '';
-  window.__apkState = (s) => {
-    if (s === 'ready') say('Новая версия скачана — подтвердите установку');
-    else if (s === 'error') { busy = false; say('Не удалось скачать обновление приложения'); }
-  };
-  async function check() {
-    if (busy) return;
-    try {
-      const r = await fetch(BASE + '/apk.json?t=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
-      const j = await r.json(); if (!(j.versionCode > N.versionCode())) return;
-      if (tried === String(j.versionCode)) return;
-      if (!N.canInstall()) { tried = ''; say('Разрешите MinoChat устанавливать обновления, затем вернитесь в приложение'); setTimeout(() => N.allowInstall(), 1800); return; }
-      tried = String(j.versionCode); busy = true;
-      say('Скачиваю новую версию приложения ' + (j.versionName || '') + '…');
-      N.install(BASE + '/' + (j.file || 'MinoChat.apk'));
-      setTimeout(() => { busy = false; }, 120000);
-    } catch { /* нет сети */ }
-  }
-  setTimeout(check, 7000);
-  try { const A = C.Plugins.App; if (A) A.addListener('appStateChange', (s) => { if (s && s.isActive) setTimeout(check, 2000); }); } catch { /* ignore */ }
-  setInterval(check, 30 * 60 * 1000);
-})();
