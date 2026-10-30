@@ -323,10 +323,3 @@ _ag = _re.sub(r'versionName\s+"[^"]*"', 'versionName "%s"' % _ver, _ag, count=1)
 open('android/app/build.gradle', 'w', encoding='utf8').write(_ag)
 open('apk.json', 'w', encoding='utf8').write(_json.dumps({'versionCode': _code, 'versionName': _ver, 'file': 'MinoChat.apk'}))
 print('apk self-update bridge added, versionCode', _code)
-
-# 11) явно запрещаем отладку в манифесте (RuStore отклоняет debug-сборки)
-_mm = open(MAN, encoding='utf8').read()
-if 'android:debuggable' not in _mm:
-    _mm = _mm.replace('<application', '<application android:debuggable="false"', 1)
-    open(MAN, 'w', encoding='utf8').write(_mm)
-print('debuggable=false')
