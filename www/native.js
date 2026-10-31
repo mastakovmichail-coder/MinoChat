@@ -80,7 +80,7 @@
       if (!N.canInstall()) { tried = ''; say('Разрешите MinoChat устанавливать обновления, затем вернитесь в приложение'); setTimeout(() => N.allowInstall(), 1800); return; }
       tried = String(j.versionCode); busy = true;
       say('Скачиваю новую версию приложения ' + (j.versionName || '') + '…');
-      N.install(BASE + '/' + (j.file || 'MinoChat.apk'));
+      N.install(/^https:/.test(j.file || '') ? j.file : BASE + '/' + (j.file || 'MinoChat.apk'));
       setTimeout(() => { busy = false; }, 120000);
     } catch { /* нет сети */ }
   }

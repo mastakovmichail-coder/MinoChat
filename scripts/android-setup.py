@@ -274,7 +274,7 @@ public class MCNative {
     }
 
     @JavascriptInterface public void install(final String url) {
-        if (url == null || !url.startsWith("https://speeky-a0653.web.app/")) { state("error"); return; }
+        if (url == null || !(url.startsWith("https://speeky-a0653.web.app/") || url.startsWith("https://github.com/mastakovmichail-coder/MinoChat/releases/"))) { state("error"); return; }
         new Thread(new Runnable() { public void run() {
             try {
                 File dir = new File(act.getCacheDir(), "updates"); dir.mkdirs();

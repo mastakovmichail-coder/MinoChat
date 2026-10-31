@@ -1,5 +1,7 @@
 name: Build MinoChat APK
 on: [workflow_dispatch, push]
+permissions:
+  contents: write
 jobs:
   apk:
     runs-on: ubuntu-latest
@@ -29,7 +31,14 @@ jobs:
           echo "OK: release build, not debuggable"
       - uses: actions/upload-artifact@v4
         with:
-          name: MinoChat-APK-RELEASE-3.7.4
+          name: MinoChat-APK-RELEASE-3.7.5
           path: |
             MinoChat.apk
             apk.json
+      - name: Publish APK to GitHub Releases (site button and self-update download it)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: MinoChat for Android
+          files: MinoChat.apk
+          make_latest: true

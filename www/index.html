@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050814">
-<meta name="ui-version" content="4.0.0">
+<meta name="ui-version" content="4.1.2">
 <link rel="icon" id="fav" type="image/png" href="favicon.png">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -56,6 +56,13 @@ label.f{display:block;margin:12px 0 6px 3px;font-size:12.5px;color:var(--muted)}
 .gbtn:hover{transform:translateY(-2px)}
 .or{display:flex;align-items:center;gap:10px;margin:16px 0 4px;color:var(--muted);font-size:12.5px}
 .or:before,.or:after{content:"";flex:1;height:1px;background:var(--line)}
+.instcard{display:flex;align-items:center;gap:14px;padding:14px;border-radius:18px;background:var(--panel2,rgba(255,255,255,.06));border:1px solid var(--line,rgba(255,255,255,.12));color:inherit;text-decoration:none;transition:.2s}
+.instcard:hover{transform:translateY(-2px);border-color:var(--a2,#2f6bff)}
+.instcard.mine{border-color:var(--a2,#2f6bff);box-shadow:0 0 0 2px rgba(47,107,255,.25)}
+.instcard.off{opacity:.55;cursor:default}
+.instico{font-size:30px;line-height:1}.insttxt{display:flex;flex-direction:column;flex:1;min-width:0}.insttxt small{opacity:.7;margin-top:2px}
+.instgo{padding:8px 14px;border-radius:12px;background:var(--a2,#2f6bff);color:#fff;font-weight:600;font-size:13.5px}
+.instnote{font-size:12px;opacity:.65;margin:6px 4px 14px;line-height:1.4}
 .link{display:block;margin:14px auto 0;color:var(--a2);font-size:13.5px}
 .err{margin-top:12px;padding:10px 12px;border-radius:12px;background:rgba(255,92,122,.12);border:1px solid rgba(255,92,122,.4);color:#ff8aa0;font-size:13.5px;display:none}
 .err.on{display:block;animation:pop .3s both}
@@ -536,6 +543,7 @@ function showAuth(mode, notice) {
   g.append('Продолжить с Google');
   root.replaceChildren(h('div', { class: 'center' }, h('div', { class: 'card' }, logoBlock(), h('h1', { class: 'brand' }, 'MinoChat'), h('p', { class: 'tag' }, 'Общайся легко. Звони. Делись.'),
     h('div', { class: 'tabs' }, tl, tr), form, h('div', { class: 'or' }, 'или'), g,
+    (typeof isNativeApp === 'function' && !isNativeApp()) ? h('button', { class: 'link', type: 'button', onclick: () => openInstallDialog() }, '📲 Установить приложение') : null,
     (ls.get('sp_prev', '') && accounts().length) ? h('button', { class: 'link', type: 'button', onclick: () => { ls.set('sp_active', ls.get('sp_prev', 'main')); ls.set('sp_prev', ''); location.reload(); } }, '← Вернуться к другому аккаунту') : null)));
   sw(tab); if (notice) show(notice);
 }
@@ -860,6 +868,7 @@ function renderList() {
     const sv = S.chats.find(isSaved);
     if (S.flt === 'all') rows.push(rowEl({ uid: 'saved', name: '★', color: '#2f6bff' }, sv && sv.lastMsg ? sv.lastMsg.text : 'Заметки, файлы и ссылки для себя', sv && sv.lastMsg ? fmtTime(sv.lastMsg.ts) : '', 0, false, openSaved, S.active && chatOf(S.active) && isSaved(chatOf(S.active)), 'Избранное'));
     if (S.flt === 'all') rows.push(rowEl({ uid: 'bots', name: '🤖', color: '#7c5cff' }, 'Погода, курсы валют, переводчик, игры, заметки…', '', 0, false, openBotCatalog, false, 'Каталог ботов'));
+    if (!isNativeApp()) rows.push(rowEl({ uid: 'inst', name: '📲', color: '#2f6bff' }, 'Для Windows и Android', '', 0, false, openInstallDialog, false, 'Установить приложение'));
   }
   if (S.results) rows.push(h('div', { class: 'sect' }, 'Ваши чаты'));
   const chats = visibleChats(), um = cfg.get('unreadMark');
@@ -2826,6 +2835,31 @@ window.addEventListener('keydown', (e) => {
     e.preventDefault(); const l = visibleChats(), i = l.findIndex((x) => x.id === S.active), n = l[i + (e.key === 'ArrowDown' ? 1 : -1)]; if (n) openChat(n.id);
   }
 });
+function isNativeApp() { return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) || /Electron/.test(navigator.userAgent) || !!window.MCNative; }
+const DL = { win: 'https://github.com/mastakovmichail-coder/MinoChat-Windows/releases/latest/download/MinoChat-Windows-Setup.exe', and: 'https://github.com/mastakovmichail-coder/MinoChat/releases/latest/download/MinoChat.apk' };
+async function dlExists(f) {
+  if (/^https?:/.test(f)) return true;
+  try { const r = await fetch(f, { method: 'HEAD', cache: 'no-store' }); const t = r.headers.get('content-type') || ''; return r.ok && !/text\/html/.test(t); } catch { return false; }
+}
+function openInstallDialog() {
+  const ua = navigator.userAgent, mine = /Android/i.test(ua) ? 'and' : /Windows/i.test(ua) ? 'win' : '';
+  let m;
+  const card = (key, ico, title, sub, note) => {
+    const a = h('a', { class: 'instcard' + (mine === key ? ' mine' : ''), href: DL[key], download: DL[key].split('/').pop(), rel: 'noopener' },
+      h('span', { class: 'instico' }, ico), h('span', { class: 'insttxt' }, h('b', {}, title), h('small', {}, sub)), h('span', { class: 'instgo' }, 'Скачать'));
+    const n = h('div', { class: 'instnote' }, note);
+    dlExists(DL[key]).then((ok) => { if (!ok) { a.classList.add('off'); a.removeAttribute('href'); a.querySelector('.instgo').textContent = 'Скоро'; a.onclick = (e) => { e.preventDefault(); toast('Файл ещё не загружен на сайт'); }; } });
+    return h('div', {}, a, n);
+  };
+  const body = h('div', { class: 'instbox' },
+    h('h2', { style: 'margin:0 0 4px' }, 'Установить MinoChat'),
+    h('p', { class: 'hint', style: 'margin:0 0 14px' }, 'Выберите, для чего скачать приложение.'),
+    card('win', '🪟', 'Windows', 'Установщик для компьютера (.exe)', 'Скачивается с GitHub. Windows может показать «защита ПК»: нажмите «Подробнее» → «Выполнить в любом случае». Приложение не подписано платным сертификатом.'),
+    card('and', '🤖', 'Android', 'Приложение для телефона (.apk)', 'Скачивается с GitHub. Разрешите установку из этого источника, когда телефон спросит. Приложение само проверяет обновления.'),
+    deferredInstall ? h('button', { class: 'btn ghost', style: 'margin-top:12px', onclick: async () => { deferredInstall.prompt(); deferredInstall = null; if (m) m.remove(); } }, '🌐 Или установить прямо из браузера') : null,
+    h('button', { class: 'link', type: 'button', onclick: () => m.remove() }, 'Закрыть'));
+  m = modal(body);
+}
 let deferredInstall = null;
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredInstall = e; });
 
@@ -2842,7 +2876,7 @@ const FEATURES = {
   'Уведомления': ['Всплывающие уведомления', 'Предпросмотр текста', 'Звуки: 6 мелодий, громкость', 'Звук отправки', 'Режим «не беспокоить» по расписанию', 'Счётчик в заголовке вкладки и значке', 'Мигание заголовка'],
   'Администрирование': ['Синяя и золотая галочки у профилей', 'Блокировка аккаунтов администрацией', 'Панель разработчика под паролем (галочки, баны, правка профилей и групп)'],
   'Боты и истории': ['Каталог ботов', 'BotMaker: заявки на создание ботов', 'Погодный помощник: сейчас, неделя, по часам, осадки, предупреждения', 'Утренняя сводка погоды и «Мой город»', 'Курсы валют ЦБ РФ и криптовалюты', 'Конвертер валют', 'Переводчик на 15 языков', 'Напоминалка: «через 10 минут…», «завтра в 9:00…»', 'Игры: кубик, монетка, угадай число', 'Викторина и камень-ножницы-бумага', 'Заметки и дела в облаке', 'Истории на 24 часа с просмотрами'],
-  'Навигация и сервис': ['Нижнее меню: Чаты, Звонки, Настройки', 'История звонков и обратный звонок', 'Счётчик пропущенных звонков', 'Папки чатов', 'Упоминания @логин с подсказкой', 'Ссылки-приглашения в группы', 'Список устройств и выход на других устройствах', 'Автообновление интерфейса', 'Автообновление самого приложения (APK)'],
+  'Навигация и сервис': ['Нижнее меню: Чаты, Звонки, Настройки', 'История звонков и обратный звонок', 'Счётчик пропущенных звонков', 'Папки чатов', 'Упоминания @логин с подсказкой', 'Ссылки-приглашения в группы', 'Список устройств и выход на других устройствах', 'Автообновление интерфейса', 'Автообновление самого приложения (APK)', 'Кнопка «Установить приложение»: Windows и Android'],
   'Данные': ['Работа офлайн (кэш)', 'Индикатор отсутствия сети', 'Экспорт чата в файл', 'Экспорт и импорт настроек', 'Статистика', 'Сброс настроек', 'Установка как приложение (PWA)'],
 };
 const featCount = () => Object.values(FEATURES).reduce((n, a) => n + a.length, 0);
@@ -3056,7 +3090,7 @@ function openSettings(tab, full) {
         h('button', { class: 'btn ghost', onclick: () => { const o = {}; Object.keys(DEF).forEach((k) => { o[k] = cfg.get(k); }); delete o.pin; delete o.pinSalt; download('MinoChat-settings.json', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(o, null, 2))); } }, '⬇ Экспорт настроек'),
         (() => { const f = h('input', { type: 'file', accept: 'application/json', style: 'display:none', onchange: async (e) => { const file = e.target.files[0]; if (!file) return; try { const o = JSON.parse(await file.text()); Object.keys(o).forEach((k) => { if (k in DEF && k !== 'pin' && k !== 'pinSalt') cfg.set(k, o[k]); }); applyTheme(); toast('Настройки импортированы'); render(); renderList(); } catch { toast('Файл не подходит'); } } }); return h('div', {}, f, h('button', { class: 'btn ghost', onclick: () => f.click() }, '⬆ Импорт настроек')); })(),
         h('button', { class: 'btn ghost', onclick: () => { if (S.active) exportChat(); else toast('Откройте чат, который нужно сохранить'); } }, '📄 Экспортировать открытый чат'),
-        deferredInstall ? h('button', { class: 'btn ghost', onclick: async () => { deferredInstall.prompt(); deferredInstall = null; render(); } }, '📲 Установить как приложение') : null,
+        isNativeApp() ? null : h('button', { class: 'btn ghost', onclick: openInstallDialog }, '📲 Установить приложение (Windows / Android)'),
         h('button', { class: 'btn ghost', onclick: () => { cfg.set('hiddenChats', {}); cfg.set('cleared', {}); cfg.set('hiddenMsgs', {}); cfg.set('archived', []); toast('Скрытое возвращено'); renderList(); } }, '👁 Вернуть скрытые и архивные чаты'),
         h('button', { class: 'btn ghost', style: 'color:var(--danger)', onclick: () => { if (!confirm('Сбросить все настройки оформления и уведомлений?')) return; Object.keys(DEF).forEach((k) => { if (k !== 'pin' && k !== 'pinSalt') try { localStorage.removeItem('mc_' + k); } catch { /* ignore */ } }); applyTheme(); toast('Настройки сброшены'); renderList(); render(); } }, 'Сбросить настройки'));
     } else {
