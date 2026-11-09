@@ -5,6 +5,12 @@ permissions:
 jobs:
   apk:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [site, store]
+    env:
+      MC_STORE: ${{ matrix.variant == 'store' && '1' || '0' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -29,13 +35,30 @@ jobs:
           $BT/apksigner verify --verbose --print-certs MinoChat.apk
           if $BT/aapt dump xmltree MinoChat.apk AndroidManifest.xml | grep -i "debuggable.*0xffffffff"; then echo "ERROR: APK is still DEBUGGABLE"; exit 1; fi
           echo "OK: release build, not debuggable"
-      - uses: actions/upload-artifact@v4
+      - name: Check that the store build has no install permission
+        if: matrix.variant == 'store'
+        run: |
+          BT=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -1)
+          $BT/aapt dump permissions MinoChat.apk
+          if $BT/aapt dump permissions MinoChat.apk | grep -i REQUEST_INSTALL_PACKAGES; then echo "ERROR: REQUEST_INSTALL_PACKAGES is present"; exit 1; fi
+          mv MinoChat.apk MinoChat-RuStore.apk
+          echo "OK: no REQUEST_INSTALL_PACKAGES"
+      - name: Upload RuStore APK
+        if: matrix.variant == 'store'
+        uses: actions/upload-artifact@v4
         with:
-          name: MinoChat-APK-RELEASE-3.7.5
+          name: MinoChat-RuStore-APK-3.7.6
+          path: MinoChat-RuStore.apk
+      - name: Upload site APK
+        if: matrix.variant == 'site'
+        uses: actions/upload-artifact@v4
+        with:
+          name: MinoChat-APK-RELEASE-3.7.6
           path: |
             MinoChat.apk
             apk.json
       - name: Publish APK to GitHub Releases (site button and self-update download it)
+        if: matrix.variant == 'site'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest

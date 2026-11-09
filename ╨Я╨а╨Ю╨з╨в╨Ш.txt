@@ -54,3 +54,9 @@ UPLOAD.BAT (самый простой способ)
 
 RuStore: APK теперь собирается как РЕЛИЗ (не debug) - RuStore принимает только такие.
 Ключ подписи тот же (minochat.keystore), поэтому вход через Google и обновление поверх старой версии работают как раньше.
+
+
+3.7.6: сборка для RuStore. GitHub Actions теперь собирает ДВА файла:
+  MinoChat-APK-RELEASE-3.7.6  - MinoChat.apk для сайта/GitHub (с самообновлением)
+  MinoChat-RuStore-APK-3.7.6  - MinoChat-RuStore.apk для RuStore (БЕЗ разрешения REQUEST_INSTALL_PACKAGES и без самообновления)
+В RuStore загружайте ТОЛЬКО MinoChat-RuStore.apk.

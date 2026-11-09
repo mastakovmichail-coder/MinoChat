@@ -300,17 +300,18 @@ public class MCNative {
 ''')
 os.makedirs(RES + '/xml', exist_ok=True)
 open(RES + '/xml/mc_paths.xml', 'w', encoding='utf8').write('<?xml version="1.0" encoding="utf-8"?>\n<paths>\n    <cache-path name="mcupdates" path="updates/" />\n</paths>\n')
+_store = os.environ.get('MC_STORE') == '1'  # сборка для магазина (RuStore): без самообновления и без REQUEST_INSTALL_PACKAGES
 _m2 = open(MAN, encoding='utf8').read()
-if 'REQUEST_INSTALL_PACKAGES' not in _m2:
+if 'REQUEST_INSTALL_PACKAGES' not in _m2 and not _store:
     _m2 = _m2.replace('</manifest>', '    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />\n</manifest>')
-if 'McFileProvider' not in _m2:
+if 'McFileProvider' not in _m2 and not _store:
     _m2 = _m2.replace('</application>', '''        <provider android:name=".McFileProvider" android:authorities="${applicationId}.mcupdate" android:exported="false" android:grantUriPermissions="true">
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/mc_paths" />
         </provider>
     </application>''')
 open(MAN, 'w', encoding='utf8').write(_m2)
 _ma = open(_jd2 + '/MainActivity.java', encoding='utf8').read()
-if 'MCNative' not in _ma:
+if 'MCNative' not in _ma and not _store:
     _ma = _ma.replace('        super.onCreate(b);\n', '        super.onCreate(b);\n        try { getBridge().getWebView().addJavascriptInterface(new MCNative(this), "MCNative"); } catch (Exception e) { /* ignore */ }\n', 1)
     open(_jd2 + '/MainActivity.java', 'w', encoding='utf8').write(_ma)
 # versionCode / versionName из package.json (3.7.0 -> 30700), чтобы приложение понимало, что вышла новая версия
@@ -322,4 +323,4 @@ _ag = _re.sub(r'versionCode\s+\d+', 'versionCode %d' % _code, _ag, count=1)
 _ag = _re.sub(r'versionName\s+"[^"]*"', 'versionName "%s"' % _ver, _ag, count=1)
 open('android/app/build.gradle', 'w', encoding='utf8').write(_ag)
 open('apk.json', 'w', encoding='utf8').write(_json.dumps({'versionCode': _code, 'versionName': _ver, 'file': 'MinoChat.apk'}))
-print('apk self-update bridge added, versionCode', _code)
+print('store build' if _store else 'apk self-update bridge added', 'versionCode', _code)
